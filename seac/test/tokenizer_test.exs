@@ -1,6 +1,27 @@
 defmodule SeaC.TokenizerTests do
   use ExUnit.Case
 
+  test "should be able to tokenize a valid Sea program" do
+    {:ok, input} = File.read("test/fixtures/hello_world.sea")
+
+    assert SeaC.Tokenizer.tokenize(input) == [
+             "(",
+             "module",
+             "HelloWorld",
+             "(",
+             "import",
+             "(",
+             "IO:write/1",
+             ")",
+             ")",
+             "(",
+             "write",
+             "\"Hello, world!\"",
+             ")",
+             ")"
+           ]
+  end
+
   test "should be able to split a string into tokens" do
     input = "(one two\nthree\tfour)"
 

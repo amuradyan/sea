@@ -1,0 +1,5 @@
+(module HelloWorld
+  (import
+    (IO:write/1))
+
+  (write "Hello, world!"))
