@@ -18,6 +18,8 @@ defmodule SeaC.Tokenizer do
       # parenthesis
       "(" -> tokenize(rest, "", tokens ++ [first])
       ")" -> tokenize(rest, "", tokens ++ [first])
+      # strings
+      "\"" -> parse_string(rest, first, tokens)
       # whitespaces
       " " when partial == "" -> tokenize(rest, "", tokens)
       "\n" when partial == "" -> tokenize(rest, "", tokens)
@@ -27,6 +29,15 @@ defmodule SeaC.Tokenizer do
       "\t" -> tokenize(rest, "", tokens ++ [partial])
       # the generic case
       _ -> tokenize(rest, partial <> first, tokens)
+    end
+  end
+
+  def parse_string([first | rest], partial, tokens, previous \\ "") do
+    case first do
+      "\\" -> parse_string(rest, partial <> first, tokens, first)
+      "\"" when previous == "\\" -> parse_string(rest, partial <> first, tokens)
+      "\"" -> tokenize(rest, "", tokens ++ [partial <> first])
+      _ -> parse_string(rest, partial <> first, tokens)
     end
   end
 
