@@ -1,7 +1,7 @@
-defmodule SeaC do
+defmodule SeaC.Tokenizer do
   def tokenize(input) do
     input
-    |> normalize
+    |> insulate_parenthesis
     |> String.graphemes()
     |> tokenize("", [])
   end
@@ -30,7 +30,7 @@ defmodule SeaC do
     end
   end
 
-  def normalize(input) do
+  def insulate_parenthesis(input) do
     input
     |> String.replace("(", " ( ")
     |> String.replace(")", " ) ")
