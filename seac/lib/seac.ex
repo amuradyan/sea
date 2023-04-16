@@ -4,20 +4,28 @@ defmodule SeaC do
     |> normalize
     |> String.graphemes()
     |> tokenize("", [])
-    |> Enum.reject(&(&1 == ""))
   end
 
   def tokenize([], partial, tokens) do
-    tokens ++ [partial]
+    case partial do
+      "" -> tokens
+      _ -> tokens ++ [partial]
+    end
   end
 
   def tokenize([first | rest], partial, tokens) do
     case first do
+      # parenthesis
       "(" -> tokenize(rest, "", tokens ++ [first])
       ")" -> tokenize(rest, "", tokens ++ [first])
+      # whitespaces
+      " " when partial == "" -> tokenize(rest, "", tokens)
+      "\n" when partial == "" -> tokenize(rest, "", tokens)
+      "\t" when partial == "" -> tokenize(rest, "", tokens)
       " " -> tokenize(rest, "", tokens ++ [partial])
       "\n" -> tokenize(rest, "", tokens ++ [partial])
       "\t" -> tokenize(rest, "", tokens ++ [partial])
+      # the generic case
       _ -> tokenize(rest, partial <> first, tokens)
     end
   end
