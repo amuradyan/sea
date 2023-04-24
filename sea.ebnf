@@ -1,0 +1,178 @@
+(* RESEVED WORDS *)
+module = 'module' ;
+import = 'import' ;
+export = 'export' ;
+function = 'function' ;
+test = 'test' ;
+to_be_implemented = '???' ;
+let = 'let' ;
+mutable = '__mutable__' ;
+
+(* SYMBOLS *)
+question_mark = '?' ;
+bang = '!' ;
+colon = ':' ;
+semicolon = ';' ;
+single_quote = "'" ;
+double_quote = '"' ;
+comma = ',' ;
+dot = '.' ;
+less_than = '<' ;
+greater_than = '>' ;
+underscore = '_' ;
+hyphen = '-' ;
+forward_slash = '/' ;
+back_slash = '\' ;
+equal = '=' ;
+plus = '+' ;
+opeing_round_bracket = '(' ;
+closing_round_bracket = ')' ;
+opeing_square_bracket = '[' ;
+closing_square_bracket = ']' ;
+opening_curly_bracket = '{' ;
+closing_curly_bracket = '}' ;
+
+(* WHITESPACE *)
+eol = '\n' ;
+tab = '\t' ;
+space = ' ' ;
+
+whitespace
+= space | tab | eol ;
+
+symbol
+= question_mark
+| bang
+| colon
+| semicolon
+| single_quote
+| double_quote
+| comma
+| dot
+| less_than
+| greater_than
+| underscore
+| hyphen
+| forward_slash
+| back_slash
+| equal
+| plus
+| opeing_round_bracket
+| closing_round_bracket
+| opeing_square_bracket
+| closing_square_bracket
+| opening_curly_bracket
+| closing_curly_bracket ;
+
+vertical_gap
+= eol , eol ;
+
+(* NUMBERS *)
+zero
+= '0' ;
+
+one_to_nine
+= '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' ;
+
+digit
+= zero | one_to_nine ;
+
+positive_number
+= one_to_nine , { digit } ;
+
+negative_number
+= hyphen , positive_number ;
+
+whole_number
+= negative_number | zero | positive_number ;
+
+decimal_number
+= whole_number , dot , { zero } , positive_number ;
+
+number
+= decimal_number | whole_number ;
+
+(* STRINGS *)
+lowercase
+= 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g'
+| 'h' | 'i' | 'j' | 'k' | 'l' | 'm' | 'n'
+| 'o' | 'p' | 'q' | 'r' | 's' | 't' | 'u'
+| 'v' | 'w' | 'x' | 'y' | 'z' ;
+
+uppercase
+= 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G'
+| 'H' | 'I' | 'J' | 'K' | 'L' | 'M' | 'N'
+| 'O' | 'P' | 'Q' | 'R' | 'S' | 'T' | 'U'
+| 'V' | 'W' | 'X' | 'Y' | 'Z' ;
+
+letter
+= lowercase | uppercase ;
+
+string
+= double_quote , { letter | digit | symbol | whitespace } , double_quote ;
+
+(* IDENTIFIERS *)
+identifier
+= lowercase , { hyphen , lowercase | digit , { lowercase | digit } } , [ bang | question_mark ] ;
+
+(* ATOMS *)
+atom
+= colon , identifier ;
+
+(* BOOLEANS *)
+true
+= colon , 'true' ;
+
+false
+= colon , 'false' ;
+
+boolean
+= true | false ;
+
+(* LIST *)
+list
+= opeing_square_bracket , { number | string | identifier } , closing_square_bracket ;
+
+(* FUNCTIONS *)
+arity
+= zero | positive_number ;
+
+function_name
+= identifier ;
+
+function_declaration
+= function_name , forward_slash , arity ;
+
+function_uri
+= module_name , colon , function_name , forward_slash , arity ;
+
+function_definition
+= ??? ;
+
+(* IMPORTS *)
+imports
+= opening_round_bracket , import , eol ,
+    tab , tab , opening_round_bracket , function_uri , closing_round_bracket , eol ,
+    { tab , tab , opening_round_bracket , function_uri , closing_round_bracket , eol } , closing_round_bracket ;
+
+(* EXPORTS *)
+exports
+= opening_round_bracket , export , eol ,
+    tab , tab , opening_round_bracket , function_declaration , closing_round_bracket , eol ,
+    { tab , tab , opening_round_bracket , function_declaration , closing_round_bracket , eol } , closing_round_bracket ;
+
+(* MODULES *)
+module_name
+= uppercase , { letter | uppercase } ;
+
+module_definition
+= opeing_round_bracket , module , module_name , vertical_gap ,
+  [ tab , imports , vertical_gap ] ,
+  tab , exports , vertical_gap ,
+  function_definition+ , closing_round_bracket ;
+
+(* PROGRAMS *)
+empty_program
+= opeing_round_bracket , closing_round_bracket ;
+
+programm = (empty_program | module_definition) , eol ;
