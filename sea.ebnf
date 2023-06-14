@@ -151,14 +151,14 @@ function_definition
 (* IMPORTS *)
 imports
 = opening_round_bracket , import , eol ,
-    tab , tab , opening_round_bracket , function_uri , closing_round_bracket , eol ,
-    { tab , tab , opening_round_bracket , function_uri , closing_round_bracket , eol } , closing_round_bracket ;
+    { tab , tab , function_uri , eol } ,
+    tab , tab , function_uri , eol , closing_round_bracket ;
 
 (* EXPORTS *)
 exports
 = opening_round_bracket , export , eol ,
-    tab , tab , opening_round_bracket , function_declaration , closing_round_bracket , eol ,
-    { tab , tab , opening_round_bracket , function_declaration , closing_round_bracket , eol } , closing_round_bracket ;
+    { tab , tab , function_declaration , eol } ,
+    tab , tab , function_declaration , eol , closing_round_bracket ;
 
 (* COMMENTS *)
 line_comment
