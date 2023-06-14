@@ -4,11 +4,14 @@ import = 'import' ;
 export = 'export' ;
 function = 'function' ;
 test = 'test' ;
-to_be_implemented = '???' ;
+tbd = '???' ;
 let = 'let' ;
 mutable = '__mutable__' ;
+mutate = '__mutate__' ;
 
 (* SYMBOLS *)
+hash = '#' ;
+pipe = '|' ;
 question_mark = '?' ;
 bang = '!' ;
 colon = ':' ;
@@ -129,10 +132,6 @@ false
 boolean
 = true | false ;
 
-(* LIST *)
-list
-= opeing_square_bracket , { number | string | identifier } , closing_square_bracket ;
-
 (* FUNCTIONS *)
 arity
 = zero | positive_number ;
@@ -160,6 +159,16 @@ exports
 = opening_round_bracket , export , eol ,
     tab , tab , opening_round_bracket , function_declaration , closing_round_bracket , eol ,
     { tab , tab , opening_round_bracket , function_declaration , closing_round_bracket , eol } , closing_round_bracket ;
+
+(* COMMENTS *)
+line_comment
+= semicolon , semicolon , { letter | digit | symbol | whitespace } , eol ;
+
+block_comment
+= hash , pipe , { letter | digit | symbol | whitespace } , pipe , hash ;
+
+sexpr_comment
+= hash , semicolon , { letter | digit | symbol | whitespace } , semicolon , hash ;
 
 (* MODULES *)
 module_name
