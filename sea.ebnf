@@ -39,9 +39,10 @@ closing_curly_bracket = '}' ;
 eol = '\n' ;
 tab = '\t' ;
 space = ' ' ;
+indent = space , space;
 
 whitespace
-= space | tab | eol ;
+= space | tab | eol | indent;
 
 symbol
 = question_mark
@@ -151,14 +152,14 @@ function_definition
 (* IMPORTS *)
 imports
 = opening_round_bracket , import , eol ,
-    { tab , tab , function_uri , eol } ,
-    tab , tab , function_uri , eol , closing_round_bracket ;
+    { indent , indent , function_uri , eol } ,
+    indent , indent , function_uri , eol , closing_round_bracket ;
 
 (* EXPORTS *)
 exports
 = opening_round_bracket , export , eol ,
-    { tab , tab , function_declaration , eol } ,
-    tab , tab , function_declaration , eol , closing_round_bracket ;
+    { indent , indent , function_declaration , eol } ,
+    indent , indent , function_declaration , eol , closing_round_bracket ;
 
 (* COMMENTS *)
 line_comment
@@ -176,8 +177,8 @@ module_name
 
 module_definition
 = opeing_round_bracket , module , module_name , vertical_gap ,
-  [ tab , imports , vertical_gap ] ,
-  tab , exports , vertical_gap ,
+  [ indent , imports , vertical_gap ] ,
+  indent , exports , vertical_gap ,
   function_definition+ , closing_round_bracket ;
 
 (* PROGRAMS *)
