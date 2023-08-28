@@ -1,4 +1,4 @@
-(* RESEVED WORDS *)
+(* RESERVED WORDS *)
 module = 'module' ;
 import = 'import' ;
 export = 'export' ;
@@ -28,9 +28,9 @@ forward_slash = '/' ;
 back_slash = '\' ;
 equal = '=' ;
 plus = '+' ;
-opeing_round_bracket = '(' ;
+opening_round_bracket = '(' ;
 closing_round_bracket = ')' ;
-opeing_square_bracket = '[' ;
+opening_square_bracket = '[' ;
 closing_square_bracket = ']' ;
 opening_curly_bracket = '{' ;
 closing_curly_bracket = '}' ;
@@ -61,9 +61,9 @@ symbol
 | back_slash
 | equal
 | plus
-| opeing_round_bracket
+| opening_round_bracket
 | closing_round_bracket
-| opeing_square_bracket
+| opening_square_bracket
 | closing_square_bracket
 | opening_curly_bracket
 | closing_curly_bracket ;
@@ -115,6 +115,9 @@ letter
 string
 = double_quote , { letter | digit | symbol | whitespace } , double_quote ;
 
+constant
+= number | letter | string | boolean | atom ;
+
 (* IDENTIFIERS *)
 identifier
 = lowercase , { hyphen , lowercase | digit , { lowercase | digit } } , [ bang | question_mark ] ;
@@ -146,20 +149,46 @@ function_declaration
 function_uri
 = module_name , colon , function_name , forward_slash , arity ;
 
+function_call
+= opening_round_bracket , function_name , { function_arguments } , closing_round_bracket ;
+
+function_arguments
+= { constant | identifier | function_call } ;
+
+simple_evaluation
+= opening_curly_bracket , constant | identifier , closing_curly_bracket ;
+
+function_body
+= simple_evaluation | function_call;
+
+test_description
+= string ;
+
+function_test
+= opening_round_bracket , test, test_description , eol ,
+  indent , function_body , closing_round_bracket ;
+
+function_signature
+= opening_curly_bracket , function_name , {identifier} , closing_curly_bracket ;
+
 function_definition
-= ??? ;
+= opening_round_bracket , function , function_signature , eol,
+  indent , function_test , eol ,
+  { indent , function_test , eol } ,
+  eol ,
+  indent , function_body , closing_round_bracket ;
 
 (* IMPORTS *)
 imports
 = opening_round_bracket , import , eol ,
-    { indent , indent , function_uri , eol } ,
-    indent , indent , function_uri , eol , closing_round_bracket ;
+  { indent , indent , function_uri , eol } ,
+  indent , indent , function_uri , eol , closing_round_bracket ;
 
 (* EXPORTS *)
 exports
 = opening_round_bracket , export , eol ,
-    { indent , indent , function_declaration , eol } ,
-    indent , indent , function_declaration , eol , closing_round_bracket ;
+  { indent , indent , function_declaration , eol } ,
+  indent , indent , function_declaration , eol , closing_round_bracket ;
 
 (* COMMENTS *)
 line_comment
@@ -176,13 +205,14 @@ module_name
 = uppercase , { letter | uppercase } ;
 
 module_definition
-= opeing_round_bracket , module , module_name , vertical_gap ,
+= opening_round_bracket , module , module_name , vertical_gap ,
   [ indent , imports , vertical_gap ] ,
   indent , exports , vertical_gap ,
   function_definition+ , closing_round_bracket ;
 
 (* PROGRAMS *)
 empty_program
-= opeing_round_bracket , closing_round_bracket ;
+= opening_round_bracket , closing_round_bracket ;
 
-programm = (empty_program | module_definition) , eol ;
+program
+= (empty_program | module_definition) , eol ;
