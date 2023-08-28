@@ -1,0 +1,17 @@
+(module Adder
+
+  (export add/2)
+
+  (function (add x y)
+    (test "that zero does not change the sum"
+      (= (add 0 1) 1))
+    (test "that zero does not change the sum"
+      (= (add 1 0) 1))
+    (test "that zero does not change the sum"
+      (= (add 0 0) 0))
+    (test "that inverses should add up to zero"
+      (= (add -1 1) 0))
+    (test "that inverses should add up to zero"
+      (= (add -2 2) 0))
+
+    (+ x y)))

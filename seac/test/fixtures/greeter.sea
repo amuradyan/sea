@@ -1,0 +1,12 @@
+(module Greeter
+
+  (import
+    (IO:write/1)
+    (Strings:concat/1))
+
+  (export
+    (greet-someone/1))
+
+  (function (greet-someone name)
+    (test ???)
+    (write (concat "Hello " name "!"))))
