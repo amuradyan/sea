@@ -4,28 +4,23 @@ defmodule SeaC.TokenizerTests do
   test "should be able to tokenize a valid Sea program" do
     {:ok, input} = File.read("test/fixtures/hello_world.sea")
 
-    assert SeaC.Tokenizer.tokenize(input) == [
-             "(",
-             "module",
-             "HelloWorld",
-             "(",
-             "import",
-             "(",
-             "IO:write/1",
-             ")",
-             ")",
-             "(",
-             "write",
-             "\"Hello, world!\"",
-             ")",
-             ")"
-           ]
+    assert SeaC.Tokenizer.tokenize(input) ==
+             [
+               [
+                 "(",
+                 "module",
+                 "HelloWorld",
+                 ["(", "import", ["(", "IO:write/1", ")"], ")"],
+                 ["(", "write", "\"Hello, world!\"", ")"],
+                 ")"
+               ]
+             ]
   end
 
   test "should be able to split a string into tokens" do
     input = "(one two\nthree\tfour)"
 
-    assert SeaC.Tokenizer.tokenize(input) == ["(", "one", "two", "three", "four", ")"]
+    assert SeaC.Tokenizer.tokenize(input) == [["(", "one", "two", "three", "four", ")"]]
   end
 
   test "should consider a space as a token separator" do
@@ -73,7 +68,7 @@ defmodule SeaC.TokenizerTests do
   test "should consider an open parenthesis as a token" do
     input = "(one"
 
-    assert SeaC.Tokenizer.tokenize(input) == ["(", "one"]
+    assert SeaC.Tokenizer.tokenize(input) == [["(", "one"]]
   end
 
   test "should consider a close parenthesis as a token" do
@@ -139,27 +134,27 @@ defmodule SeaC.TokenizerTests do
   end
 
   test "that we extract no expression from an empty input" do
-    assert SeaC.Tokenizer.separate_expression([]) == {[], []}
+    assert SeaC.Tokenizer.split_expression([]) == {[], []}
   end
 
   test "that we are able to separate the expression from the rest" do
     input = ["(", "alo", ")", "popok", "pnduk"]
 
-    assert SeaC.Tokenizer.separate_expression(input) ==
+    assert SeaC.Tokenizer.split_expression(input) ==
              {["(", "alo", ")"], ["popok", "pnduk"]}
   end
 
   test "that we are able to extract expressions that contain expressions" do
     input = ["(", "(", "alo", ")", ")"]
 
-    assert SeaC.Tokenizer.separate_expression(input) ==
+    assert SeaC.Tokenizer.split_expression(input) ==
       {["(", "(", "alo", ")", ")"], []}
 end
 
   test "that we handle the missing closing paren by responding with whatever me managed to read" do
     input = ["(", "alo", "ova"]
 
-    assert SeaC.Tokenizer.separate_expression(input) ==
+    assert SeaC.Tokenizer.split_expression(input) ==
       {["(", "alo", "ova"], []}
   end
 end

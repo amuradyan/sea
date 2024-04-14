@@ -16,8 +16,10 @@ defmodule SeaC.Tokenizer do
   def tokenize([first | rest], partial, tokens) do
     case first do
       # parenthesis
-      "(" -> tokenize(rest, "", tokens ++ [first])
-      ")" -> tokenize(rest, "", tokens ++ [first])
+      "(" ->
+        {[_ | expression], tail} = split_expression([first | rest])
+        expression_tokens = tokenize(expression, "", [])
+        tokenize(tail, "", tokens ++ [["(" | expression_tokens]])
       # strings
       "\"" -> parse_string(rest, first, tokens)
       # whitespaces
@@ -51,32 +53,32 @@ defmodule SeaC.Tokenizer do
     |> String.replace(")", " ) ")
   end
 
-  def separate_expression([]) do
+  def split_expression([]) do
     {[], []}
   end
 
-  def separate_expression([first | rest]) do
-    separate_expression(rest, 1, [first])
+  def split_expression([first | rest]) do
+    split_expression(rest, 1, [first])
   end
 
-  def separate_expression([], _, accumulated_expression) do
+  def split_expression([], _, accumulated_expression) do
     {accumulated_expression, []}
   end
 
-  def separate_expression(rest, 0, accumulated_expression) do
+  def split_expression(rest, 0, accumulated_expression) do
     {accumulated_expression, rest}
   end
 
-  def separate_expression([")" | rest], open_parens_count, accumulated_expression) do
-    separate_expression(rest, open_parens_count - 1, accumulated_expression ++ [")"])
+  def split_expression([")" | rest], open_parens_count, accumulated_expression) do
+    split_expression(rest, open_parens_count - 1, accumulated_expression ++ [")"])
   end
 
-  def separate_expression(["(" | rest], open_parens_count, accumulated_expression) do
-    separate_expression(rest, open_parens_count + 1, accumulated_expression ++ ["("])
+  def split_expression(["(" | rest], open_parens_count, accumulated_expression) do
+    split_expression(rest, open_parens_count + 1, accumulated_expression ++ ["("])
   end
 
-  def separate_expression([first | rest], open_parens_count, accumulated_expression) do
-    separate_expression(rest, open_parens_count, accumulated_expression ++ [first])
+  def split_expression([first | rest], open_parens_count, accumulated_expression) do
+    split_expression(rest, open_parens_count, accumulated_expression ++ [first])
   end
 
 end
