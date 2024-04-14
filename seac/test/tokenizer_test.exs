@@ -137,4 +137,29 @@ defmodule SeaC.TokenizerTests do
 
     assert SeaC.Tokenizer.insulate_parenthesis(input) == "one ) "
   end
+
+  test "that we extract no expression from an empty input" do
+    assert SeaC.Tokenizer.separate_expression([]) == {[], []}
+  end
+
+  test "that we are able to separate the expression from the rest" do
+    input = ["(", "alo", ")", "popok", "pnduk"]
+
+    assert SeaC.Tokenizer.separate_expression(input) ==
+             {["(", "alo", ")"], ["popok", "pnduk"]}
+  end
+
+  test "that we are able to extract expressions that contain expressions" do
+    input = ["(", "(", "alo", ")", ")"]
+
+    assert SeaC.Tokenizer.separate_expression(input) ==
+      {["(", "(", "alo", ")", ")"], []}
+end
+
+  test "that we handle the missing closing paren by responding with whatever me managed to read" do
+    input = ["(", "alo", "ova"]
+
+    assert SeaC.Tokenizer.separate_expression(input) ==
+      {["(", "alo", "ova"], []}
+  end
 end

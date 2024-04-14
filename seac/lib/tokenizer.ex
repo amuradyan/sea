@@ -32,7 +32,11 @@ defmodule SeaC.Tokenizer do
     end
   end
 
-  def parse_string([first | rest], partial, tokens, previous \\ "") do
+  def parse_string(input, partial, tokens, previous \\ "")
+
+  def parse_string([], partial, tokens, _) do tokens ++ [partial] end
+
+  def parse_string([first | rest], partial, tokens, previous) do
     case first do
       "\\" -> parse_string(rest, partial <> first, tokens, first)
       "\"" when previous == "\\" -> parse_string(rest, partial <> first, tokens)
@@ -46,4 +50,33 @@ defmodule SeaC.Tokenizer do
     |> String.replace("(", " ( ")
     |> String.replace(")", " ) ")
   end
+
+  def separate_expression([]) do
+    {[], []}
+  end
+
+  def separate_expression([first | rest]) do
+    separate_expression(rest, 1, [first])
+  end
+
+  def separate_expression([], _, accumulated_expression) do
+    {accumulated_expression, []}
+  end
+
+  def separate_expression(rest, 0, accumulated_expression) do
+    {accumulated_expression, rest}
+  end
+
+  def separate_expression([")" | rest], open_parens_count, accumulated_expression) do
+    separate_expression(rest, open_parens_count - 1, accumulated_expression ++ [")"])
+  end
+
+  def separate_expression(["(" | rest], open_parens_count, accumulated_expression) do
+    separate_expression(rest, open_parens_count + 1, accumulated_expression ++ ["("])
+  end
+
+  def separate_expression([first | rest], open_parens_count, accumulated_expression) do
+    separate_expression(rest, open_parens_count, accumulated_expression ++ [first])
+  end
+
 end
