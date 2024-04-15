@@ -8,7 +8,7 @@ defmodule SeaC.Tokenizer do
 
   def tokenize([], "", tokens) do tokens end
 
-  def tokenize([], partial, tokens) do tokens ++ [partial] end
+  def tokenize([], partial, tokens) do tokens ++ [String.to_atom(partial)] end
 
   def tokenize([first | rest], partial, tokens) do
     case first do
@@ -16,16 +16,16 @@ defmodule SeaC.Tokenizer do
       "(" ->
         {[_ | expression], tail} = split_expression([first | rest])
         expression_tokens = tokenize(expression, "", [])
-        tokenize(tail, "", tokens ++ [["(" | expression_tokens]])
+        tokenize(tail, "", tokens ++ [[String.to_atom(first) | expression_tokens]])
       # strings
       "\"" -> parse_string(rest, first, tokens)
       # whitespaces
       " " when partial == "" -> tokenize(rest, "", tokens)
       "\n" when partial == "" -> tokenize(rest, "", tokens)
       "\t" when partial == "" -> tokenize(rest, "", tokens)
-      " " -> tokenize(rest, "", tokens ++ [partial])
-      "\n" -> tokenize(rest, "", tokens ++ [partial])
-      "\t" -> tokenize(rest, "", tokens ++ [partial])
+      " " -> tokenize(rest, "", tokens ++ [String.to_atom(partial)])
+      "\n" -> tokenize(rest, "", tokens ++ [String.to_atom(partial)])
+      "\t" -> tokenize(rest, "", tokens ++ [String.to_atom(partial)])
       # the generic case
       _ -> tokenize(rest, partial <> first, tokens)
     end
@@ -33,13 +33,13 @@ defmodule SeaC.Tokenizer do
 
   def parse_string(input, partial, tokens, previous \\ "")
 
-  def parse_string([], partial, tokens, _) do tokens ++ [partial] end
+  def parse_string([], partial, tokens, _) do tokens ++ [String.to_atom(partial)] end
 
   def parse_string([first | rest], partial, tokens, previous) do
     case first do
       "\\" -> parse_string(rest, partial <> first, tokens, first)
       "\"" when previous == "\\" -> parse_string(rest, partial <> first, tokens)
-      "\"" -> tokenize(rest, "", tokens ++ [partial <> first])
+      "\"" -> tokenize(rest, "", tokens ++ [String.to_atom(partial <> first)])
       _ -> parse_string(rest, partial <> first, tokens)
     end
   end
