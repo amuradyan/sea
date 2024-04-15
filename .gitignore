@@ -26,3 +26,9 @@
 **/tmp/
 
 **/*.lock
+**/misc.ex
+
+# Obsidian files
+**/.trash
+**/.obsidian
+ 

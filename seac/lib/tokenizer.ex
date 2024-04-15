@@ -6,12 +6,9 @@ defmodule SeaC.Tokenizer do
     |> tokenize("", [])
   end
 
-  def tokenize([], partial, tokens) do
-    case partial do
-      "" -> tokens
-      _ -> tokens ++ [partial]
-    end
-  end
+  def tokenize([], "", tokens) do tokens end
+
+  def tokenize([], partial, tokens) do tokens ++ [partial] end
 
   def tokenize([first | rest], partial, tokens) do
     case first do
