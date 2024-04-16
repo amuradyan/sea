@@ -2,6 +2,8 @@
   "elixirLS.projectDir": "./seac",
   "cSpell.words": [
     "arity",
+    "foldl",
+    "parens",
     "sexpr",
     "whitespaces"
   ]

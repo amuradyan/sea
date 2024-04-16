@@ -1,22 +1,30 @@
 defmodule SeaC.Entry do
-  alias SeaC.Record
+  alias SeaC.EntryRecord
 
   def new_entry do
-    Agent.start_link(fn -> %Record{ names: [], values: [] } end)
+    {_, entry} = Agent.start_link(fn -> %EntryRecord{names: [], values: []} end)
+    entry
   end
 
   def lookup_helper(record, name, fallback) do
     case record.names do
-      [] -> fallback.()
-      [first_name | _] when first_name == name -> hd(record.values)
+      [] ->
+        fallback.()
+
+      [first_name | _] when first_name == name ->
+        hd(record.values)
+
       [_ | names] ->
-        lookup_helper(%Record{names: names, values: tl(record.values)}, name, fallback)
+        lookup_helper(%EntryRecord{names: names, values: tl(record.values)}, name, fallback)
     end
   end
 
   def lookup(entry, name) do
     Agent.get(
       entry,
-      fn record -> lookup_helper(record, name, fn -> "Unable to resolve " <> Atom.to_string(name) end) end)
+      fn record ->
+        lookup_helper(record, name, fn -> "Unable to resolve " <> Atom.to_string(name) end)
+      end
+    )
   end
 end
