@@ -19,12 +19,10 @@ defmodule SeaC.Entry do
     end
   end
 
-  def lookup(entry, name) do
+  def lookup(entry, name, fallback) do
     Agent.get(
       entry,
-      fn record ->
-        lookup_helper(record, name, fn -> "Unable to resolve " <> Atom.to_string(name) end)
-      end
+      fn record -> lookup_helper(record, name, fallback) end
     )
   end
 end
