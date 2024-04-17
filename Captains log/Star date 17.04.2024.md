@@ -1,4 +1,4 @@
-The environment is done. Now we map expressions to actions. 
+The environment is done. Now we map expressions to actions.
 
 I will start with only 6 types of expressions /as in the little schemer/:
 - const ....... atom

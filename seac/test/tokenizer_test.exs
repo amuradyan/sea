@@ -12,7 +12,7 @@ defmodule SeaC.TokenizerTests do
                  :HelloWorld,
                  [:"(", :import,
                  [:"(", :"IO:write/1", :")"], :")"],
-                 [:"(", :write, :"\"Hello, world!\"", :")"],
+                 [:"(", :write, :"\"Հելո, world!\"", :")"],
                  :")"
                ]
              ]
