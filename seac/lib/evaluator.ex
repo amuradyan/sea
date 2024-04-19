@@ -13,18 +13,15 @@ defmodule SeaC.Evaluator do
     cond do
       expression == true -> true
       expression == false -> false
-      is_number?(expression) -> to_number(expression)
-      ReservedWords.contains(expression) -> [:lprimitive, expression]
+      is_number?(expression) -> to_number(expression) |> Tuple.to_list |> Enum.at(1)
+      is_reserved?(expression) -> [:primitive, expression]
       true -> :identifier
     end
   end
 
-  # this will fail on non-number input
-  def to_number(expression) do
-    String.to_integer(Atom.to_string(expression))
-  end
+  def is_reserved?(expression), do: ReservedWords.contains(expression)
 
-  def text_of(expression) do
+  def text_of(expression, _ \\[]) do
     hd(tl(expression))
   end
 
@@ -50,10 +47,22 @@ defmodule SeaC.Evaluator do
     end
   end
 
-  def is_number?(atom) do
+  def to_number(atom, _ \\ []) do
     try do
-      is_number(String.to_integer(Atom.to_string(atom)))
+      {:ok, String.to_float(Atom.to_string(atom))}
     rescue
+      _ ->
+        try do
+          {:ok, String.to_integer(Atom.to_string(atom))}
+        rescue
+          ex -> {:err, ex}
+        end
+    end
+  end
+
+  def is_number?(expression) do
+    case to_number(expression) do
+      {:ok, _} -> true
       _ -> false
     end
   end

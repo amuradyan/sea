@@ -6,6 +6,7 @@ defmodule SeaC.EvaluatorTests do
 
   test "that we regard the numbers as constants" do
     assert Evaluator.expression_to_action(:"7") == 7
+    assert Evaluator.atom_to_action(:"7.7") == 7.7
   end
 
   test "that we regard the Booleans as constants" do
