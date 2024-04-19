@@ -21,7 +21,7 @@ defmodule SeaC.Evaluator do
   end
 
   def identifier(expression, env) do
-    Environment.lookup(
+    Environment.environment_lookup(
       env,
       expression,
       fn -> "Unable to resolve " <> Atom.to_string(expression) end
@@ -30,7 +30,7 @@ defmodule SeaC.Evaluator do
 
   def is_reserved?(expression), do: ReservedWords.contains(expression)
 
-  def text_of(expression, _ \\ Environment.new_environment()) do
+  def text_of(expression, _ \\ []) do
     hd(tl(expression))
   end
 
@@ -56,7 +56,7 @@ defmodule SeaC.Evaluator do
     end
   end
 
-  def to_number(atom, _ \\ Environment.new_environment()) do
+  def to_number(atom, _ \\ []) do
     try do
       {:ok, String.to_float(Atom.to_string(atom))}
     rescue

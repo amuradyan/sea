@@ -1,51 +1,36 @@
 defmodule SeaC.Environment do
-  use Agent
-
-  alias SeaC.Entry
-  alias SeaC.EnvironmentRecord
-
-  def new_environment do
-    clean_env_record =
-      %EnvironmentRecord{entries: []}
-
-    {_, env} =
-      Agent.start_link(fn -> clean_env_record end)
-
-    env
-  end
-
-  def lookup_helper(record, name, fallback) do
-    case record.entries do
+  def environment_lookup(env, name, fallback) do
+    case env do
       [] ->
         fallback.()
 
       [first | rest] ->
-        Entry.lookup(
+        entry_lookup(
           first,
           name,
-          fn -> lookup_helper(%EnvironmentRecord{entries: rest}, name, fallback) end
+          fn -> environment_lookup(rest, name, fallback) end
         )
     end
   end
 
-  def lookup(env, name, fallback) do
-    Agent.get(
-      env,
-      fn record -> lookup_helper(record, name, fallback) end
-    )
+  def entry_lookup(entry, name, fallback) do
+    case entry do
+      [] ->
+        fallback.()
+
+      [[], _] ->
+        fallback.()
+
+      [_, []] ->
+        fallback.()
+
+      [[first_name | _], [first_value | _]] when first_name == name ->
+        first_value
+
+      [[_ | names], [_ | values]] ->
+        entry_lookup([names, values], name, fallback)
+    end
   end
 
-  def extend_environment(env, entry) do
-    Agent.update(env, fn record ->
-      %EnvironmentRecord{entries: [entry | record.entries]}
-    end)
-  end
-
-  def peek(env) do
-    er = Agent.get(env, fn r -> r end)
-
-    List.foldl(er.entries, [], fn e, acc ->
-      [Agent.get(e, fn en -> [en.names, en.values] end) | acc]
-    end)
-  end
+  def extend_environment(env, entry), do: [entry | env]
 end
