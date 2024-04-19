@@ -1,4 +1,5 @@
 defmodule SeaC.Evaluator do
+  alias SeaC.Environment
   alias SeaC.ReservedWords
 
   def expression_to_action(expression) do
@@ -13,20 +14,28 @@ defmodule SeaC.Evaluator do
     cond do
       expression == true -> true
       expression == false -> false
-      is_number?(expression) -> to_number(expression) |> Tuple.to_list |> Enum.at(1)
+      is_number?(expression) -> to_number(expression) |> Tuple.to_list() |> Enum.at(1)
       is_reserved?(expression) -> [:primitive, expression]
-      true -> :identifier
+      true -> fn env, expression -> identifier(env, expression) end
     end
+  end
+
+  def identifier(expression, env) do
+    Environment.lookup(
+      env,
+      expression,
+      fn -> "Unable to resolve " <> Atom.to_string(expression) end
+    )
   end
 
   def is_reserved?(expression), do: ReservedWords.contains(expression)
 
-  def text_of(expression, _ \\[]) do
+  def text_of(expression, _ \\ Environment.new_environment()) do
     hd(tl(expression))
   end
 
   def is_quote?(expression) do
-     hd(expression) == :quote
+    hd(expression) == :quote
   end
 
   def is_lambda?(expression) do
@@ -47,7 +56,7 @@ defmodule SeaC.Evaluator do
     end
   end
 
-  def to_number(atom, _ \\ []) do
+  def to_number(atom, _ \\ Environment.new_environment()) do
     try do
       {:ok, String.to_float(Atom.to_string(atom))}
     rescue

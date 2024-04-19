@@ -1,6 +1,10 @@
 defmodule SeaC.EvaluatorTests do
   use ExUnit.Case
 
+  alias SeaC.Entry
+  alias SeaC.EnvironmentRecord
+  alias SeaC.EntryRecord
+  alias SeaC.Environment
   alias SeaC.Evaluator
   alias SeaC.ReservedWords
 
@@ -26,7 +30,21 @@ defmodule SeaC.EvaluatorTests do
   end
 
   test "that we regard some expressions as identifiers" do
-    assert Evaluator.expression_to_action(:expression) == :identifier
+    identifier = :birthmarks
+
+    entry = Entry.new_entry()
+    busy_entry_record = %EntryRecord{names: [:scars, identifier], values: [4, :none]}
+    Agent.update(entry, fn _ -> busy_entry_record end)
+
+    env = Environment.new_environment()
+    busy_env_record = %EnvironmentRecord{entries: [entry]}
+    Agent.update(env, fn _ -> busy_env_record end)
+
+    resolved_identifier = Evaluator.expression_to_action(identifier).(identifier, env)
+    unresolved_identifier = Evaluator.expression_to_action(:unknown).(:unknown, env)
+
+    assert resolved_identifier == :none
+    assert unresolved_identifier == "Unable to resolve unknown"
   end
 
   test "that we regard some expressions as atoms" do
