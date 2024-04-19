@@ -24,6 +24,25 @@ defmodule SeaC.EvaluatorTests do
     assert Evaluator.expression_to_action(:expression) == :identifier
   end
 
+  test "that we regard some expressions as atoms" do
+    assert Evaluator.expression_to_action([:quote, :this]) == :this
+    assert Evaluator.expression_to_action([:quote, [:this, :as, :well]]) == [:this, :as, :well]
+  end
+
+  test "that we regard some expressions as branchings" do
+    assert Evaluator.expression_to_action([:cond, [[:case_clause], [:true_clause]]]) == :cond
+  end
+
+  test "that we regard some expressions as anonymous functions" do
+    assert Evaluator.expression_to_action([:lambda, [:arguments], [:body]]) == :lambda
+  end
+
+  test "that we regard some expressions as function applications" do
+    assert Evaluator.expression_to_action([]) == :apply
+    assert Evaluator.expression_to_action([[:this], :is, :it]) == :apply
+    assert Evaluator.expression_to_action([:this, :is, :it]) == :apply
+  end
+
   test "that we gracefully handle unknown types of expressions" do
     assert Evaluator.expression_to_action("des tination") == :unknown
   end

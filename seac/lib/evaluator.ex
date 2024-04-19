@@ -19,8 +19,30 @@ defmodule SeaC.Evaluator do
     end
   end
 
+  def text_of(expression) do
+    hd(tl(expression))
+  end
+
+  def is_quote?(expression) do
+     hd(expression) == :quote
+  end
+
+  def is_lambda?(expression) do
+    hd(expression) == :lambda
+  end
+
+  def is_cond?(expression) do
+    hd(expression) == :cond
+  end
+
   def list_to_action(expression) do
-    :"???"
+    cond do
+      Enum.empty?(expression) -> :apply
+      is_quote?(expression) -> text_of(expression)
+      is_lambda?(expression) -> :lambda
+      is_cond?(expression) -> :cond
+      true -> :apply
+    end
   end
 
   def is_number?(atom) do
