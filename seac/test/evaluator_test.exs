@@ -5,18 +5,18 @@ defmodule SeaC.EvaluatorTests do
   alias SeaC.ReservedWords
 
   test "that we regard the numbers as constants" do
-    assert Evaluator.expression_to_action(:"7") == 7
-    assert Evaluator.atom_to_action(:"7.7") == 7.7
+    assert Evaluator.meaning(:"7", []) == 7
+    assert Evaluator.meaning(:"7.7", []) == 7.7
   end
 
   test "that we regard the Booleans as constants" do
-    assert Evaluator.expression_to_action(:true) == true
-    assert Evaluator.expression_to_action(:false) == false
+    assert Evaluator.meaning(:true, []) == true
+    assert Evaluator.meaning(:false ,[]) == false
   end
 
   test "that we regard some words as constants" do
     actions_for_reserved_words =
-      Enum.map(ReservedWords.all(), fn word -> Evaluator.expression_to_action(word) end)
+      Enum.map(ReservedWords.all(), fn word -> Evaluator.meaning(word, []) end)
 
     expected_outcome =
       Enum.map(ReservedWords.values, fn word -> word end) ++
@@ -29,34 +29,40 @@ defmodule SeaC.EvaluatorTests do
     identifier = :birthmarks
     env = [[[:scars, identifier], [4, :none]]]
 
-    resolved_identifier = Evaluator.expression_to_action(identifier).(identifier, env)
-    unresolved_identifier = Evaluator.expression_to_action(:unknown).(:unknown, env)
+    resolved_identifier = Evaluator.meaning(identifier, env)
+    unresolved_identifier = Evaluator.meaning(:unknown, env)
 
     assert resolved_identifier == :none
     assert unresolved_identifier == "Unable to resolve unknown"
   end
 
   test "that we regard some expressions as atoms" do
-    assert Evaluator.expression_to_action([:quote, :this]) == :this
-    assert Evaluator.expression_to_action([:quote, [:this, :as, :well]]) == [:this, :as, :well]
+    assert Evaluator.meaning([:quote, :this], []) == :this
+    assert Evaluator.meaning([:quote, [:this, :as, :well]], []) == [:this, :as, :well]
   end
 
   test "that we regard some expressions as branchings" do
-    assert Evaluator.expression_to_action([:cond, [[:case_clause], [:true_clause]]]) == :cond
+    # assert Evaluator.list_to_action([:cond, [[:case_clause], [:true_clause]]]) == :cond
+    :"???"
   end
 
   test "that we regard some expressions as anonymous functions" do
-    assert Evaluator.expression_to_action([:lambda, [:arguments], [:body]]) == :lambda
+    env = []
+    lambda = [:lambda, [:a, :b], [:+, :a, :b]]
+    value = [:"non-primitive", [env, lambda]]
+
+    assert Evaluator.meaning(lambda, env) == value
   end
 
   test "that we regard some expressions as function applications" do
-    assert Evaluator.expression_to_action([]) == :apply
-    assert Evaluator.expression_to_action([[:this], :is, :it]) == :apply
-    assert Evaluator.expression_to_action([:this, :is, :it]) == :apply
+    # assert Evaluator.list_to_action([]) == :apply
+    # assert Evaluator.list_to_action([[:this], :is, :it]) == :apply
+    # assert Evaluator.list_to_action([:this, :is, :it]) == :apply
+    :"???"
   end
 
   test "that we gracefully handle unknown types of expressions" do
-    assert Evaluator.expression_to_action("des tination") == :unknown
+    assert Evaluator.meaning("des tination", []) == :unknown
   end
 
   test "that we are able to check whether an atom is a number" do

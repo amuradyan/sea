@@ -2,21 +2,25 @@ defmodule SeaC.Evaluator do
   alias SeaC.Environment
   alias SeaC.ReservedWords
 
+  def meaning(expression, env) do
+    expression_to_action(expression).(expression, env)
+  end
+
   def expression_to_action(expression) do
     cond do
       is_atom(expression) -> atom_to_action(expression)
       is_list(expression) -> list_to_action(expression)
-      true -> :unknown
+      true -> fn _, _ -> :unknown end
     end
   end
 
   def atom_to_action(expression) do
     cond do
-      expression == true -> true
-      expression == false -> false
-      is_number?(expression) -> to_number(expression) |> Tuple.to_list() |> Enum.at(1)
-      is_reserved?(expression) -> [:primitive, expression]
-      true -> fn env, expression -> identifier(env, expression) end
+      expression == true -> fn _, _ -> true end
+      expression == false -> fn _, _-> false end
+      is_number?(expression) -> fn _, _-> to_number(expression) |> Tuple.to_list() |> Enum.at(1) end
+      is_reserved?(expression) -> fn _, _ -> [:primitive, expression] end
+      true -> fn expression, env -> identifier(expression, env) end
     end
   end
 
@@ -48,11 +52,11 @@ defmodule SeaC.Evaluator do
 
   def list_to_action(expression) do
     cond do
-      Enum.empty?(expression) -> :apply
-      is_quote?(expression) -> text_of(expression)
-      is_lambda?(expression) -> :lambda
-      is_cond?(expression) -> :cond
-      true -> :apply
+      Enum.empty?(expression) -> fn _, _ -> :apply end
+      is_quote?(expression) -> fn _, _ -> text_of(expression) end
+      is_lambda?(expression) -> fn _, env -> [:"non-primitive", [env, expression]] end
+      is_cond?(expression) -> fn _, _ -> :cond end
+      true -> fn _, _ -> :apply end
     end
   end
 
