@@ -11,12 +11,17 @@ defmodule SeaC.Evaluator do
 
   def atom_to_action(expression) do
     cond do
-      expression == true -> :const
-      expression == false -> :const
-      is_number?(expression) -> :const
-      ReservedWords.contains(expression) -> :const
+      expression == true -> true
+      expression == false -> false
+      is_number?(expression) -> to_number(expression)
+      ReservedWords.contains(expression) -> [:lprimitive, expression]
       true -> :identifier
     end
+  end
+
+  # this will fail on non-number input
+  def to_number(expression) do
+    String.to_integer(Atom.to_string(expression))
   end
 
   def text_of(expression) do

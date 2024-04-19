@@ -5,19 +5,23 @@ defmodule SeaC.EvaluatorTests do
   alias SeaC.ReservedWords
 
   test "that we regard the numbers as constants" do
-    assert Evaluator.expression_to_action(:"7") == :const
+    assert Evaluator.expression_to_action(:"7") == 7
   end
 
   test "that we regard the Booleans as constants" do
-    assert Evaluator.expression_to_action(:true) == :const
-    assert Evaluator.expression_to_action(:false) == :const
+    assert Evaluator.expression_to_action(:true) == true
+    assert Evaluator.expression_to_action(:false) == false
   end
 
   test "that we regard some words as constants" do
     actions_for_reserved_words =
       Enum.map(ReservedWords.all(), fn word -> Evaluator.expression_to_action(word) end)
 
-    assert Enum.uniq(actions_for_reserved_words) == [:const]
+    expected_outcome =
+      Enum.map(ReservedWords.values, fn word -> word end) ++
+      Enum.map(ReservedWords.primitives, fn word -> [:primitive, word] end)
+
+    assert actions_for_reserved_words -- expected_outcome |> Enum.empty?()
   end
 
   test "that we regard some expressions as identifiers" do

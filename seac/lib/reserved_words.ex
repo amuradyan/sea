@@ -1,7 +1,5 @@
 defmodule SeaC.ReservedWords do
-  @reserved_words [
-    true,
-    false,
+  @primitives [
     :cons,
     :car,
     :cdr,
@@ -14,7 +12,13 @@ defmodule SeaC.ReservedWords do
     :+
   ]
 
-  def all, do: @reserved_words
+  @values [true, false]
 
-  def contains(word), do: not (Enum.find(@reserved_words, fn e -> e == word end) |> is_nil)
+  def all, do: @primitives ++ @values
+
+  def primitives, do: @primitives
+
+  def values, do: @values
+
+  def contains(word), do: not (Enum.find(all(), fn e -> e == word end) |> is_nil)
 end
