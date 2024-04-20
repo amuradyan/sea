@@ -80,8 +80,26 @@ defmodule SeaC.Evaluator do
     end
   end
 
-  def evaluate_condition() do
-    :"???"
+  def else_clause?(clause) do
+    case clause do
+      [] -> false
+      [condition | _] -> condition == :else
+    end
+  end
+
+  def evaluate_clauses(clauses, table) do
+    condition_of = fn clause -> hd(clause) end
+    body_of = fn clause -> hd(tl(clause)) end
+
+    case clauses do
+      [] -> nil
+      [first_clause | rest] ->
+        cond do
+          else_clause?(first_clause) -> meaning(body_of.(first_clause), table)
+          meaning(condition_of.(first_clause), table) -> meaning(body_of.(first_clause), table)
+          true -> evaluate_clauses(rest, table)
+        end
+    end
   end
 
   def to_number(atom, _ \\ []) do

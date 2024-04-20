@@ -41,11 +41,6 @@ defmodule SeaC.EvaluatorTests do
     assert Evaluator.meaning([:quote, [:this, :as, :well]], []) == [:this, :as, :well]
   end
 
-  test "that we regard some expressions as branchings" do
-    # assert Evaluator.list_to_action([:cond, [[:case_clause], [:true_clause]]]) == :cond
-    :"???"
-  end
-
   test "that we regard some expressions as anonymous functions" do
     env = []
     lambda = [:lambda, [:a, :b], [:+, :a, :b]]
@@ -68,5 +63,30 @@ defmodule SeaC.EvaluatorTests do
   test "that we are able to check whether an atom is a number" do
     assert Evaluator.is_number?(:"3") == true
     assert Evaluator.is_number?(:"3a") == false
+  end
+
+  test "that we are able to distinguish `else` clauses in conditions" do
+    assert Evaluator.else_clause?([:else, [:body]]) == true
+    assert Evaluator.else_clause?([:ololo, [:body]]) == false
+    assert Evaluator.else_clause?([]) == false
+  end
+
+  test "that we can fall back to `else` clause, while evaluating the condition" do
+    env = [[[:always, :one], [false, 1]]]
+
+    false_clause = [:always, :unknown]
+    else_clause = [:else, :one]
+
+    assert Evaluator.evaluate_clauses([false_clause, else_clause], env) == 1
+  end
+
+  test "that we are able to evaluate condition clauses" do
+    env = [[[:always, :sometimes, :two], [false, true, 2]]]
+
+    false_clause = [:always, 1]
+    true_clause = [:sometimes, :two]
+    else_clause = [:else, 3]
+
+    assert Evaluator.evaluate_clauses([false_clause, true_clause, else_clause], env) == 2
   end
 end
