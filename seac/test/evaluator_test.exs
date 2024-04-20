@@ -56,6 +56,13 @@ defmodule SeaC.EvaluatorTests do
     :"???"
   end
 
+  test "that we can evaluate a list" do
+    env = [[[:x], [2]]]
+
+    assert Evaluator.evaluate_list([[:quote, :mek], :x , :"3"], env) == [:mek, 2, 3]
+    assert Evaluator.evaluate_list([], env) == []
+  end
+
   test "that we gracefully handle unknown types of expressions" do
     assert Evaluator.meaning("des tination", []) == :unknown
   end

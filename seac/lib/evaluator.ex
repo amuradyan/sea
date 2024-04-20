@@ -87,7 +87,14 @@ defmodule SeaC.Evaluator do
     end
   end
 
-  def evaluate_clauses(clauses, table) do
+  def evaluate_list(list, env) do
+    case list do
+      [] -> []
+      [first | rest] -> [meaning(first, env) | evaluate_list(rest, env)]
+    end
+  end
+
+  def evaluate_clauses(clauses, env) do
     condition_of = fn clause -> hd(clause) end
     body_of = fn clause -> hd(tl(clause)) end
 
@@ -95,9 +102,9 @@ defmodule SeaC.Evaluator do
       [] -> nil
       [first_clause | rest] ->
         cond do
-          else_clause?(first_clause) -> meaning(body_of.(first_clause), table)
-          meaning(condition_of.(first_clause), table) -> meaning(body_of.(first_clause), table)
-          true -> evaluate_clauses(rest, table)
+          else_clause?(first_clause) -> meaning(body_of.(first_clause), env)
+          meaning(condition_of.(first_clause), env) -> meaning(body_of.(first_clause), env)
+          true -> evaluate_clauses(rest, env)
         end
     end
   end
