@@ -15,12 +15,24 @@ defmodule SeaC.Evaluator do
   end
 
   def atom_to_action(expression) do
+    evaluate_true = fn _, _ -> true end
+    evaluate_false = fn _, _ -> false end
+    evaluate_a_reserved_word = fn _, _ -> [:primitive, expression] end
+
+    evaluate_number = fn _, _ ->
+      to_number(expression) |> Tuple.to_list() |> Enum.at(1)
+    end
+
+    evaluate_identifier = fn expression, env ->
+      identifier(expression, env)
+    end
+
     cond do
-      expression == true -> fn _, _ -> true end
-      expression == false -> fn _, _-> false end
-      is_number?(expression) -> fn _, _-> to_number(expression) |> Tuple.to_list() |> Enum.at(1) end
-      is_reserved?(expression) -> fn _, _ -> [:primitive, expression] end
-      true -> fn expression, env -> identifier(expression, env) end
+      expression == true -> evaluate_true
+      expression == false -> evaluate_false
+      is_number?(expression) -> evaluate_number
+      is_reserved?(expression) -> evaluate_a_reserved_word
+      true -> evaluate_identifier
     end
   end
 
@@ -51,13 +63,25 @@ defmodule SeaC.Evaluator do
   end
 
   def list_to_action(expression) do
-    cond do
-      Enum.empty?(expression) -> fn _, _ -> :apply end
-      is_quote?(expression) -> fn _, _ -> text_of(expression) end
-      is_lambda?(expression) -> fn _, env -> [:"non-primitive", [env, expression]] end
-      is_cond?(expression) -> fn _, _ -> :cond end
-      true -> fn _, _ -> :apply end
+    evaluate_quote = fn _, _ -> text_of(expression) end
+    evaluate_cond = fn _, _ -> :cond end
+    evaluate_application = fn _, _ -> :apply end
+
+    evaluate_lambda = fn _, env ->
+      [:"non-primitive", [env, expression]]
     end
+
+    cond do
+      Enum.empty?(expression) -> evaluate_application
+      is_quote?(expression) -> evaluate_quote
+      is_lambda?(expression) -> evaluate_lambda
+      is_cond?(expression) -> evaluate_cond
+      true -> evaluate_application
+    end
+  end
+
+  def evaluate_condition() do
+    :"???"
   end
 
   def to_number(atom, _ \\ []) do
