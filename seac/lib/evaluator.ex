@@ -30,8 +30,8 @@ defmodule SeaC.Evaluator do
     cond do
       expression == true -> evaluate_true
       expression == false -> evaluate_false
-      is_number?(expression) -> evaluate_number
-      is_reserved?(expression) -> evaluate_a_reserved_word
+      number?(expression) -> evaluate_number
+      reserved?(expression) -> evaluate_a_reserved_word
       true -> evaluate_identifier
     end
   end
@@ -44,21 +44,21 @@ defmodule SeaC.Evaluator do
     )
   end
 
-  def is_reserved?(expression), do: ReservedWords.contains(expression)
+  def reserved?(expression), do: ReservedWords.contains(expression)
 
   def text_of(expression, _ \\ []) do
     hd(tl(expression))
   end
 
-  def is_quote?(expression) do
+  def quote?(expression) do
     hd(expression) == :quote
   end
 
-  def is_lambda?(expression) do
+  def lambda?(expression) do
     hd(expression) == :lambda
   end
 
-  def is_cond?(expression) do
+  def cond?(expression) do
     hd(expression) == :cond
   end
 
@@ -73,9 +73,9 @@ defmodule SeaC.Evaluator do
 
     cond do
       Enum.empty?(expression) -> evaluate_application
-      is_quote?(expression) -> evaluate_quote
-      is_lambda?(expression) -> evaluate_lambda
-      is_cond?(expression) -> evaluate_cond
+      quote?(expression) -> evaluate_quote
+      lambda?(expression) -> evaluate_lambda
+      cond?(expression) -> evaluate_cond
       true -> evaluate_application
     end
   end
@@ -94,12 +94,49 @@ defmodule SeaC.Evaluator do
     end
   end
 
+  def primitive?(function) do
+    case function do
+      [:primitive | _] -> true
+      _ -> false
+    end
+  end
+
+  def non_primitive?(function) do
+    case function do
+      [:"non-primitive" | _] -> true
+      _ -> false
+    end
+  end
+
+  def atom?(expression),
+    do: primitive?(expression) || non_primitive?(expression) || is_atom(expression)
+
+  def apply_primitive(name, values) do
+    first = fn l -> hd(l) end
+    second = fn l -> hd(tl(l)) end
+
+    case name do
+      :cons -> [first.(values), second.(values)]
+      :car -> first.(values)
+      :cdr -> tl(values)
+      :null? -> first.(values) == []
+      :same? -> (first.(values) == second.(values))
+      :atom? -> is_atom(first.(values))
+      :zero? -> first.(values) == 0
+      :number? -> is_number(first.(values))
+      :+ -> first.(values) + second.(values)
+      :- -> first.(values) - second.(values)
+    end
+  end
+
   def evaluate_clauses(clauses, env) do
     condition_of = fn clause -> hd(clause) end
     body_of = fn clause -> hd(tl(clause)) end
 
     case clauses do
-      [] -> nil
+      [] ->
+        nil
+
       [first_clause | rest] ->
         cond do
           else_clause?(first_clause) -> meaning(body_of.(first_clause), env)
@@ -122,7 +159,7 @@ defmodule SeaC.Evaluator do
     end
   end
 
-  def is_number?(expression) do
+  def number?(expression) do
     case to_number(expression) do
       {:ok, _} -> true
       _ -> false

@@ -56,6 +56,37 @@ defmodule SeaC.EvaluatorTests do
     :"???"
   end
 
+  test "that we can interpret Sea functions as atoms" do
+    assert Evaluator.atom?(true) == true
+    assert Evaluator.atom?(:ping) == true
+    assert Evaluator.atom?([]) == false
+    assert Evaluator.atom?([:primitive, :function]) == true
+    assert Evaluator.atom?([:"non-primitive", :function]) == true
+  end
+
+  test "that we should be able to apply primitive functions" do
+    assert Evaluator.apply_primitive(:cons, [1, [2]]) == [1, [2]]
+    assert Evaluator.apply_primitive(:car, [1]) == 1
+    assert Evaluator.apply_primitive(:cdr, [1, 2]) == [2]
+    assert Evaluator.apply_primitive(:null?, [[]]) == true
+    assert Evaluator.apply_primitive(:null?, [1, 2]) == false
+    assert Evaluator.apply_primitive(:same?, [1, true]) == false
+    assert Evaluator.apply_primitive(:same?, [[1], [1]]) == true
+    assert Evaluator.apply_primitive(:same?, [:b, :b]) == true
+    assert Evaluator.apply_primitive(:atom?, [:values]) == true
+    assert Evaluator.apply_primitive(:atom?, [[]]) == false
+    assert Evaluator.apply_primitive(:atom?, [true]) == true
+    assert Evaluator.apply_primitive(:zero?, [0]) == true
+    assert Evaluator.apply_primitive(:zero?, [1]) == false
+    assert Evaluator.apply_primitive(:zero?, [:f]) == false
+    assert Evaluator.apply_primitive(:number?, [7]) == true
+    assert Evaluator.apply_primitive(:number?, [6.6]) == true
+    assert Evaluator.apply_primitive(:number?, [[7]]) == false
+    assert Evaluator.apply_primitive(:number?, [true]) == false
+    assert Evaluator.apply_primitive(:+, [1, 2]) == 3
+    assert Evaluator.apply_primitive(:-, [1, 2]) == -1
+  end
+
   test "that we can evaluate a list" do
     env = [[[:x], [2]]]
 
@@ -68,8 +99,8 @@ defmodule SeaC.EvaluatorTests do
   end
 
   test "that we are able to check whether an atom is a number" do
-    assert Evaluator.is_number?(:"3") == true
-    assert Evaluator.is_number?(:"3a") == false
+    assert Evaluator.number?(:"3") == true
+    assert Evaluator.number?(:"3a") == false
   end
 
   test "that we are able to distinguish `else` clauses in conditions" do
