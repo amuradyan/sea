@@ -64,11 +64,11 @@ defmodule SeaC.Evaluator do
 
   def list_to_action(expression) do
     evaluate_quote = fn _, _ -> text_of(expression) end
-    evaluate_cond = fn _, _ -> :cond end
-    evaluate_application = fn _, _ -> :apply end
+    evaluate_cond = fn _, env -> evaluate_clauses(tl(expression), env) end
+    evaluate_application = fn _, env -> application(expression, env) end
 
     evaluate_lambda = fn _, env ->
-      [:"non-primitive", [env, expression]]
+      [:"non-primitive", [env, hd(tl(expression)), hd(tl(tl(expression)))]]
     end
 
     cond do
@@ -127,6 +127,37 @@ defmodule SeaC.Evaluator do
       :+ -> first.(values) + second.(values)
       :- -> first.(values) - second.(values)
     end
+  end
+
+  def apply_closure(closure, values) do
+    case closure do
+      [table, formals, body] ->
+        env =
+          Environment.extend_environment(table, [formals, values])
+
+        meaning(body, env)
+      _ ->
+        "invalid closure" # FIXME
+    end
+  end
+
+  def apply_function(function, values) do
+    cond do
+      primitive?(function) -> apply_primitive(hd(tl(function)), values)
+      non_primitive?(function) -> apply_closure(hd(tl(function)), values)
+      true -> false
+    end
+  end
+
+  def application(expression, env) do
+    apply_function(
+      meaning(hd(expression), env),
+      evaluate_list(tl(expression), env)
+    )
+  end
+
+  def value(expression) do
+    meaning(expression, [])
   end
 
   def evaluate_clauses(clauses, env) do

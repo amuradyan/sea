@@ -44,16 +44,9 @@ defmodule SeaC.EvaluatorTests do
   test "that we regard some expressions as anonymous functions" do
     env = []
     lambda = [:lambda, [:a, :b], [:+, :a, :b]]
-    value = [:"non-primitive", [env, lambda]]
+    value = [:"non-primitive", [env | tl(lambda)]]
 
     assert Evaluator.meaning(lambda, env) == value
-  end
-
-  test "that we regard some expressions as function applications" do
-    # assert Evaluator.list_to_action([]) == :apply
-    # assert Evaluator.list_to_action([[:this], :is, :it]) == :apply
-    # assert Evaluator.list_to_action([:this, :is, :it]) == :apply
-    :"???"
   end
 
   test "that we can interpret Sea functions as atoms" do
@@ -64,7 +57,7 @@ defmodule SeaC.EvaluatorTests do
     assert Evaluator.atom?([:"non-primitive", :function]) == true
   end
 
-  test "that we should be able to apply primitive functions" do
+  test "that we are able to apply primitive functions" do
     assert Evaluator.apply_primitive(:cons, [1, [2]]) == [1, [2]]
     assert Evaluator.apply_primitive(:car, [1]) == 1
     assert Evaluator.apply_primitive(:cdr, [1, 2]) == [2]
@@ -83,14 +76,60 @@ defmodule SeaC.EvaluatorTests do
     assert Evaluator.apply_primitive(:number?, [6.6]) == true
     assert Evaluator.apply_primitive(:number?, [[7]]) == false
     assert Evaluator.apply_primitive(:number?, [true]) == false
-    assert Evaluator.apply_primitive(:+, [1, 2]) == 3
+    b1 = 10000000000000000000000000000000000000
+    b2 = 9999999999999999999999999999999999999
+    assert Evaluator.apply_primitive(:+, [1, b2]) == b1
     assert Evaluator.apply_primitive(:-, [1, 2]) == -1
+  end
+
+  test "that we are able to apply closures" do
+    closure_table = []
+    closure_formals = [:x]
+    closure_body = :x
+
+    closure = [closure_table, closure_formals, closure_body]
+
+    assert Evaluator.apply_closure(closure, [5]) == 5
+  end
+
+  test "that we can tell a primitive call from a non-primitive one and nest them" do
+    closure_table = []
+    closure_formals = [:x, :y]
+    closure_body = [:cons, :"1", [:+, :x, :y]]
+
+    closure = [closure_table, closure_formals, closure_body]
+
+    assert Evaluator.apply_function([:"non-primitive", closure], [5, 8]) == [1, 13]
+  end
+
+  test "that we are able to evaluate complex applications" do
+    closure_formals = [:x, :y]
+    closure_body = [:cons, [:+, :x, :y], :"1"]
+
+    # check for invalid applications
+    application = [[:lambda, closure_formals, closure_body], :"5", :"6"]
+
+    assert Evaluator.application(application, []) == [11, 1]
+  end
+
+  test "that we are able to calculate the values of expressions" do
+    program = [[[:lambda, [:պոպոկ],
+                [:lambda, [:պնդուկ],
+                   [:cond,
+                    [[:same?, :պնդուկ, :"2"], [:quote, :"ննդուկ"]],
+                    [:true, [:+, :պոպոկ, :"9"]]]]],
+              :"1"], :"3"]
+
+    assert Evaluator.value(:"4") == 4
+    assert Evaluator.value(true) == true
+    assert Evaluator.value([:+, :"8", :"8"]) == 16
+    assert Evaluator.value(program) == 10
   end
 
   test "that we can evaluate a list" do
     env = [[[:x], [2]]]
 
-    assert Evaluator.evaluate_list([[:quote, :mek], :x , :"3"], env) == [:mek, 2, 3]
+    assert Evaluator.evaluate_list([[:quote, :mek], :x, :"3"], env) == [:mek, 2, 3]
     assert Evaluator.evaluate_list([], env) == []
   end
 
