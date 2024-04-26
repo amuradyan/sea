@@ -10,8 +10,7 @@ defmodule SeaC.TokenizerTests do
                  :"(",
                  :module,
                  :HelloWorld,
-                 [:"(", :import,
-                 [:"(", :"IO:write/1", :")"], :")"],
+                 [:"(", :import, [:"(", :"IO:write/1", :")"], :")"],
                  [:"(", :write, :"\"Հելո, world!\"", :")"],
                  :")"
                ]
@@ -149,13 +148,37 @@ defmodule SeaC.TokenizerTests do
     input = ["(", "(", "alo", ")", ")"]
 
     assert SeaC.Tokenizer.split_expression(input) ==
-      {["(", "(", "alo", ")", ")"], []}
-end
+             {["(", "(", "alo", ")", ")"], []}
+  end
 
   test "that we handle the missing closing paren by responding with whatever me managed to read" do
     input = ["(", "alo", "ova"]
 
     assert SeaC.Tokenizer.split_expression(input) ==
-      {["(", "alo", "ova"], []}
+             {["(", "alo", "ova"], []}
+  end
+
+  test "that we are able to get rid of the parens in in tokens" do
+    raw_tokens =
+      [
+        :"(",
+        :module,
+        :HelloWorld,
+        [:"(", :import, [:"(", :"IO:write/1", :")"], :")"],
+        [:"(", :write, :"\"Հելո, world!\"", :")"],
+        :")"
+      ]
+
+    sanitized_tokens =
+      [
+        :module,
+        :HelloWorld,
+        [:import, [:"IO:write/1"]],
+        [:write, :"\"Հելո, world!\""]
+      ]
+
+    assert SeaC.Tokenizer.remove_parens(raw_tokens) == sanitized_tokens
+    assert SeaC.Tokenizer.remove_parens([]) == []
+    assert SeaC.Tokenizer.remove_parens([:a, :b, :c]) == [:a, :b, :c]
   end
 end

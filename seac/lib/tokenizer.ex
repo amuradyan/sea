@@ -6,6 +6,17 @@ defmodule SeaC.Tokenizer do
     |> tokenize("", [])
   end
 
+  def remove_parens(tokens) do
+    cond do
+      tokens == [] -> []
+      is_list(tokens) && (hd(tokens) == :"(" || hd(tokens) == :")") ->
+        remove_parens(tl(tokens))
+      is_list(tokens) && is_list(hd(tokens)) ->
+        [remove_parens(hd(tokens)) | remove_parens(tl(tokens))]
+      true -> [hd(tokens) | remove_parens(tl(tokens))]
+    end
+  end
+
   def tokenize([], "", tokens) do tokens end
 
   def tokenize([], partial, tokens) do tokens ++ [String.to_atom(partial)] end
