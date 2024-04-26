@@ -5,6 +5,7 @@
     "foldl",
     "parens",
     "sexpr",
-    "whitespaces"
+    "whitespaces",
+    "ճպուռ"
   ]
 }

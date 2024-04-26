@@ -3,6 +3,10 @@ defmodule SeaC.Evaluator do
   alias SeaC.ReservedWords
 
   def meaning(expression, env) do
+    # very handy
+    # IO.inspect(expression)
+    # IO.inspect(env)
+    # IO.puts("----------------------------------")
     expression_to_action(expression).(expression, env)
   end
 
