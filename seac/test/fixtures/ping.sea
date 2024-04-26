@@ -1,0 +1,2 @@
+((lambda (x)
+  (cons (quote ճպուռ) x)) 1)
