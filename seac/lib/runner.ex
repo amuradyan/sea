@@ -5,8 +5,6 @@ defmodule SeaC.Runner do
   def run(file) do
     {:ok, symbols} = File.read(file)
 
-    IO.inspect(symbols)
-
     symbols
       |> Tokenizer.tokenize
       |> hd # this should not be here
