@@ -127,8 +127,8 @@ defmodule SeaC.Evaluator do
 
     case name do
       :cons -> [first.(values), second.(values)]
-      :car -> first.(values)
-      :cdr -> tl(values)
+      :car -> hd(first.(values))
+      :cdr -> tl(first.(values))
       :null? -> first.(values) == []
       :same? -> (first.(values) == second.(values))
       :atom? -> is_atom(first.(values))

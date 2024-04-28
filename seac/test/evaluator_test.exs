@@ -59,8 +59,8 @@ defmodule SeaC.EvaluatorTests do
 
   test "that we are able to apply primitive functions" do
     assert Evaluator.apply_primitive(:cons, [1, [2]]) == [1, [2]]
-    assert Evaluator.apply_primitive(:car, [1]) == 1
-    assert Evaluator.apply_primitive(:cdr, [1, 2]) == [2]
+    assert Evaluator.apply_primitive(:car, [[1]]) == 1
+    assert Evaluator.apply_primitive(:cdr, [[1, 2]]) == [2]
     assert Evaluator.apply_primitive(:null?, [[]]) == true
     assert Evaluator.apply_primitive(:null?, [1, 2]) == false
     assert Evaluator.apply_primitive(:same?, [1, true]) == false
@@ -80,6 +80,43 @@ defmodule SeaC.EvaluatorTests do
     b2 = 9999999999999999999999999999999999999
     assert Evaluator.apply_primitive(:+, [1, b2]) == b1
     assert Evaluator.apply_primitive(:-, [1, 2]) == -1
+  end
+
+  test "that we are able to find the meaning of a primitive" do
+    env = [
+      [[:list], [[1, [2]]]],
+      [[:empty_list], [[]]],
+      [[:a], [1]],
+      [[:b], [[2]]],
+      [[:at], [:om]],
+      [[:zro], [0]],
+      [[:mek], [1]],
+      [[:hing], [5]],
+      [[:վեցուվեց], [6.6]],
+      [[:ծիծիլյառդ], [10000000000000000000000000000000000000]]
+    ]
+
+    assert Evaluator.meaning([:cons, :a, :b], env) == [1, [2]]
+    assert Evaluator.meaning([:car, :list], env) == 1
+    assert Evaluator.meaning([:cdr, :list], env) == [[2]]
+    assert Evaluator.meaning([:null?, :empty_list], env) == true
+    assert Evaluator.meaning([:null?, :list], env) == false
+    assert Evaluator.meaning([:same?, :a, :b], env) == false
+    assert Evaluator.meaning([:same?, :a, :a], env) == true
+    assert Evaluator.meaning([:atom?, :at], env) == true
+    assert Evaluator.meaning([:atom?, :list], env) == false
+    assert Evaluator.meaning([:atom?, true], env) == true
+    assert Evaluator.meaning([:zero?, :zro], env) == true
+    assert Evaluator.meaning([:zero?, :mek], env) == false
+    assert Evaluator.meaning([:zero?, false], env) == false
+    assert Evaluator.meaning([:number?, :hing], env) == true
+    assert Evaluator.meaning([:number?, :վեցուվեց], env) == true
+    assert Evaluator.meaning([:number?, :list], env) == false
+    assert Evaluator.meaning([:number?, true], env) == false
+    ծիծիլյառդումեկ = 10000000000000000000000000000000000001
+    իններ = 9999999999999999999999999999999999999
+    assert Evaluator.meaning([:+, :ծիծիլյառդ, :mek], env) == ծիծիլյառդումեկ
+    assert Evaluator.meaning([:-, :ծիծիլյառդ, :mek], env) == իններ
   end
 
   test "that we are able to apply closures" do
