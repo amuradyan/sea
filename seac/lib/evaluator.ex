@@ -8,7 +8,12 @@ defmodule SeaC.Evaluator do
       \nExpression: #{Kernel.inspect(expression)}
       \nEnvironment: #{Kernel.inspect(env)}
     """)
-    expression_to_action(expression).(expression, env)
+    mnng = expression_to_action(expression).(expression, env)
+    Logger.debug("""
+      \nMeaning of #{Kernel.inspect(expression)}
+    is ... #{Kernel.inspect(mnng)}
+    """)
+    mnng
   end
 
   def expression_to_action(expression) do
@@ -139,6 +144,11 @@ defmodule SeaC.Evaluator do
       [table, formals, body] ->
         env =
           Environment.extend_environment(table, [formals, values])
+
+        Logger.debug("""
+          \nApplying closure #{Kernel.inspect(body)}
+          \nIn environment #{Kernel.inspect(env)}
+        """)
 
         meaning(body, env)
       _ ->
