@@ -1,12 +1,13 @@
 defmodule SeaC.Evaluator do
+  require Logger
   alias SeaC.Environment
   alias SeaC.ReservedWords
 
   def meaning(expression, env) do
-    # very handy
-    # IO.inspect(expression)
-    # IO.inspect(env)
-    # IO.puts("----------------------------------")
+    Logger.debug("""
+      \nExpression: #{Kernel.inspect(expression)}
+      \nEnvironment: #{Kernel.inspect(env)}
+    """)
     expression_to_action(expression).(expression, env)
   end
 

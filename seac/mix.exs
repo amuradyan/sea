@@ -19,7 +19,8 @@ defmodule SeaC.MixProject do
 
   defp deps do
     [
-      {:mix_test_watch, "~> 1.0", only: [:dev, :test], runtime: false}
+      {:mix_test_watch, "~> 1.0", only: [:dev, :test], runtime: false},
+      {:logger_file_backend, "~> 0.0.11"}
     ]
   end
 end

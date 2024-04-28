@@ -24,6 +24,7 @@
 
 # Temporary files, for example, from tests.
 **/tmp/
+**/logs/
 
 **/*.lock
 **/misc.ex
@@ -31,4 +32,3 @@
 # Obsidian files
 **/.trash
 **/.obsidian
- 
