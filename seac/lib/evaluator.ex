@@ -8,11 +8,14 @@ defmodule SeaC.Evaluator do
       \nExpression: #{Kernel.inspect(expression)}
       \nEnvironment: #{Kernel.inspect(env)}
     """)
+
     mnng = expression_to_action(expression).(expression, env)
+
     Logger.debug("""
       \nMeaning of #{Kernel.inspect(expression)}
     is ... #{Kernel.inspect(mnng)}
     """)
+
     mnng
   end
 
@@ -130,7 +133,7 @@ defmodule SeaC.Evaluator do
       :car -> hd(first.(values))
       :cdr -> tl(first.(values))
       :null? -> first.(values) == []
-      :same? -> (first.(values) == second.(values))
+      :same? -> first.(values) == second.(values)
       :atom? -> is_atom(first.(values))
       :zero? -> first.(values) == 0
       :number? -> is_number(first.(values))
@@ -151,8 +154,10 @@ defmodule SeaC.Evaluator do
         """)
 
         meaning(body, env)
+
       _ ->
-        "invalid closure" # FIXME
+        # FIXME
+        "invalid closure"
     end
   end
 

@@ -6,4 +6,4 @@
         (lambda (l)
           (cond
             ((null? l) 0)
-            (else (+ 1 (length (cdr l)))))))) (quote (apple pineapple)))
+            (else (+ 1 (length (cdr l)))))))) (quote (apple pineapple pie)))

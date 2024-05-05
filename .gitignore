@@ -26,6 +26,7 @@
 **/tmp/
 **/logs/
 
+**/playground
 **/*.lock
 **/misc.ex
 **/misc_test.exs
