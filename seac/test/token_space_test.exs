@@ -18,6 +18,7 @@ defmodule SeaC.TokenSpaceTests do
     extended_token_space = %TokenSpace{elements: [[], [1]]}
 
     assert TokenSpace.extend(token_space) == extended_token_space
+    assert TokenSpace.extend(TokenSpace.new()) == TokenSpace.new()
   end
 
   test "that we can append to the top list of the TokenSpace" do

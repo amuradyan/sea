@@ -30,7 +30,10 @@ defmodule SeaC.TokenSpace do
 
   @spec extend(TokenSpace.t()) :: TokenSpace.t()
   def extend(token_space) do
-    %TokenSpace{elements: [[]] ++ token_space.elements}
+    case token_space.elements do
+      [[]] -> token_space
+      _ -> %TokenSpace{elements: [[]] ++ token_space.elements}
+    end
   end
 
   @spec append(TokenSpace.t(), any()) :: TokenSpace.t()

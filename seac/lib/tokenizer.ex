@@ -1,9 +1,11 @@
 defmodule SeaC.Tokenizer do
+  alias SeaC.TokenSpace
+
   def tokenize(input) do
     input
     |> insulate_parenthesis
     |> String.graphemes()
-    |> tokenize("", [])
+    |> tokenize("", TokenSpace.new())
   end
 
   def remove_parens(tokens) do
@@ -27,16 +29,27 @@ defmodule SeaC.Tokenizer do
   end
 
   def tokenize([], partial, tokens) do
-    tokens ++ [String.to_atom(partial)]
+    TokenSpace.append(tokens, String.to_atom(partial))
   end
 
   def tokenize([first | rest], partial, tokens) do
     case first do
-      # parenthesis
+      # parens
       "(" ->
-        {[_ | expression], tail} = split_expression([first | rest])
-        expression_tokens = tokenize(expression, "", [])
-        tokenize(tail, "", tokens ++ [[String.to_atom(first) | expression_tokens]])
+        new_tokens =
+          tokens
+          |> TokenSpace.extend()
+          |> TokenSpace.append(String.to_atom(first))
+
+        tokenize(rest, "", new_tokens)
+
+      ")" ->
+        new_tokens =
+          tokens
+          |> TokenSpace.append(String.to_atom(first))
+          |> TokenSpace.squash()
+
+        tokenize(rest, "", new_tokens)
 
       # strings
       "\"" ->
@@ -53,13 +66,13 @@ defmodule SeaC.Tokenizer do
         tokenize(rest, "", tokens)
 
       " " ->
-        tokenize(rest, "", tokens ++ [String.to_atom(partial)])
+        tokenize(rest, "", TokenSpace.append(tokens, String.to_atom(partial)))
 
       "\n" ->
-        tokenize(rest, "", tokens ++ [String.to_atom(partial)])
+        tokenize(rest, "", TokenSpace.append(tokens, String.to_atom(partial)))
 
       "\t" ->
-        tokenize(rest, "", tokens ++ [String.to_atom(partial)])
+        tokenize(rest, "", TokenSpace.append(tokens, String.to_atom(partial)))
 
       # the generic case
       _ ->
@@ -70,14 +83,14 @@ defmodule SeaC.Tokenizer do
   def parse_string(input, partial, tokens, previous \\ "")
 
   def parse_string([], partial, tokens, _) do
-    tokens ++ [String.to_atom(partial)]
+    TokenSpace.append(tokens, String.to_atom(partial))
   end
 
   def parse_string([first | rest], partial, tokens, previous) do
     case first do
       "\\" -> parse_string(rest, partial <> first, tokens, first)
       "\"" when previous == "\\" -> parse_string(rest, partial <> first, tokens)
-      "\"" -> tokenize(rest, "", tokens ++ [String.to_atom(partial <> first)])
+      "\"" -> tokenize(rest, "", TokenSpace.append(tokens, String.to_atom(partial <> first)))
       _ -> parse_string(rest, partial <> first, tokens)
     end
   end
@@ -86,33 +99,5 @@ defmodule SeaC.Tokenizer do
     input
     |> String.replace("(", " ( ")
     |> String.replace(")", " ) ")
-  end
-
-  def split_expression([]) do
-    {[], []}
-  end
-
-  def split_expression([first | rest]) do
-    split_expression(rest, 1, [first])
-  end
-
-  def split_expression([], _, accumulated_expression) do
-    {accumulated_expression, []}
-  end
-
-  def split_expression(rest, 0, accumulated_expression) do
-    {accumulated_expression, rest}
-  end
-
-  def split_expression([")" | rest], open_parens_count, accumulated_expression) do
-    split_expression(rest, open_parens_count - 1, accumulated_expression ++ [")"])
-  end
-
-  def split_expression(["(" | rest], open_parens_count, accumulated_expression) do
-    split_expression(rest, open_parens_count + 1, accumulated_expression ++ ["("])
-  end
-
-  def split_expression([first | rest], open_parens_count, accumulated_expression) do
-    split_expression(rest, open_parens_count, accumulated_expression ++ [first])
   end
 end
