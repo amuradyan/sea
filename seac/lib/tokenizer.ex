@@ -74,6 +74,11 @@ defmodule SeaC.Tokenizer do
       "\t" ->
         tokenize(rest, "", TokenSpace.append(tokens, String.to_atom(partial)))
 
+      # comments
+      ";" when partial == "" ->
+        next = Enum.drop_while(rest, fn char -> char != "\n" end)
+        tokenize(next, "", tokens)
+
       # the generic case
       _ ->
         tokenize(rest, partial <> first, tokens)

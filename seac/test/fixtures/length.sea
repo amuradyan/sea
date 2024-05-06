@@ -1,4 +1,4 @@
-(
+( ; length of a list
   (define fruits (quote (apple pineapple pie)))
   (define length
     (lambda (list)

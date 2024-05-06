@@ -20,6 +20,17 @@ defmodule SeaC.TokenizerTests do
              }
   end
 
+  test "that we ignore all the symbols till the end of the line after the semicolon" do
+    input = """
+    asd ; this is a comment
+    asd
+    """
+
+    tokens = %TokenSpace{elements: [[:asd, :asd]]}
+
+    assert SeaC.Tokenizer.tokenize(input) == tokens
+  end
+
   test "should be able to split a string into tokens" do
     input = "(one two\nthree\tfour)"
 

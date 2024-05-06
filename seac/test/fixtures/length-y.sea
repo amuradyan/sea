@@ -1,8 +1,8 @@
-(((lambda (le)
+(((lambda (le) ; setting up with Y combinator
     ((lambda (f) (f f))
      (lambda (f)
       (le (lambda (x) ((f f) x))))))
-  (lambda (length)
+  (lambda (length) ; calculating the length of a list
         (lambda (l)
           (cond
             ((null? l) 0)
