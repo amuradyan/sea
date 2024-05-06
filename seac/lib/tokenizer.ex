@@ -36,20 +36,20 @@ defmodule SeaC.Tokenizer do
     case first do
       # parens
       "(" ->
-        new_tokens =
+        extended_tokens =
           tokens
           |> TokenSpace.extend()
           |> TokenSpace.append(String.to_atom(first))
 
-        tokenize(rest, "", new_tokens)
+        tokenize(rest, "", extended_tokens)
 
       ")" ->
-        new_tokens =
+        squashed_tokens =
           tokens
           |> TokenSpace.append(String.to_atom(first))
           |> TokenSpace.squash()
 
-        tokenize(rest, "", new_tokens)
+        tokenize(rest, "", squashed_tokens)
 
       # strings
       "\"" ->
