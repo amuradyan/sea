@@ -216,4 +216,8 @@ defmodule SeaC.Evaluator do
       _ -> false
     end
   end
+
+  def define([:define, name, value], env) do
+    Environment.extend_environment(env, [[name], [meaning(value, env)]])
+  end
 end

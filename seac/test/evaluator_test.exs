@@ -4,6 +4,17 @@ defmodule SeaC.EvaluatorTests do
   alias SeaC.Evaluator
   alias SeaC.ReservedWords
 
+  test "that we can extend the environment by defining names for values" do
+    env = [[[:four], [4]]]
+    x_as_1 = [:define, :x, :"1"]
+    lambda = [:lambda, [:a, :b], [:+, :a, :b]]
+    y_as_lambda = [:define, :y, lambda]
+    value = [:"non-primitive", [env | tl(lambda)]]
+
+    assert Evaluator.define(x_as_1, env) == [[[:x], [1]], [[:four], [4]]]
+    assert Evaluator.define(y_as_lambda, env) == [[[:y], [value]], [[:four], [4]]]
+  end
+
   test "that we regard the numbers as constants" do
     assert Evaluator.meaning(:"7", []) == 7
     assert Evaluator.meaning(:"7.7", []) == 7.7
