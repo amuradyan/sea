@@ -1,0 +1,8 @@
+( ; defintion in a lambda
+  (define five 5)
+  (define adder
+    (lambda (x)
+      ((define one 1)
+        (+ x one))))
+
+  (adder five))
