@@ -154,11 +154,12 @@ defmodule SeaC.Evaluator do
     end
   end
 
-  def apply_closure(closure, values) do
+  def apply_closure(closure, values, outer_env) do
     case closure do
       [table, formals, body] ->
         env =
-          Environment.extend_environment(table, [formals, values])
+          Environment.extend_environment(table, [formals, values]) ++
+            outer_env
 
         Logger.debug("""
           \nApplying closure #{Kernel.inspect(body)}
@@ -173,18 +174,19 @@ defmodule SeaC.Evaluator do
     end
   end
 
-  def apply_function(function, values) do
+  def apply_function(function, values, env) do
     cond do
       primitive?(function) -> apply_primitive(hd(tl(function)), values)
-      non_primitive?(function) -> apply_closure(hd(tl(function)), values)
-      true -> false
+      non_primitive?(function) -> apply_closure(hd(tl(function)), values, env)
+      true -> :unknown_function
     end
   end
 
   def application(expression, env) do
     apply_function(
       meaning(hd(expression), env),
-      evaluate_list(tl(expression), env)
+      evaluate_list(tl(expression), env),
+      env
     )
   end
 

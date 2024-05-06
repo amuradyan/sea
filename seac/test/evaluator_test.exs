@@ -144,7 +144,7 @@ defmodule SeaC.EvaluatorTests do
 
     closure = [closure_table, closure_formals, closure_body]
 
-    assert Evaluator.apply_closure(closure, [5]) == 5
+    assert Evaluator.apply_closure(closure, [5], []) == 5
   end
 
   test "that we can tell a primitive call from a non-primitive one and nest them" do
@@ -154,7 +154,7 @@ defmodule SeaC.EvaluatorTests do
 
     closure = [closure_table, closure_formals, closure_body]
 
-    assert Evaluator.apply_function([:"non-primitive", closure], [5, 8]) == [1, 13]
+    assert Evaluator.apply_function([:"non-primitive", closure], [5, 8], []) == [1, 13]
   end
 
   test "that we are able to evaluate complex applications" do

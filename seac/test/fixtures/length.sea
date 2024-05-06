@@ -1,0 +1,9 @@
+(
+  (define fruits (quote (apple pineapple pie)))
+  (define length
+    (lambda (list)
+      (cond
+        ((null? list) 0)
+        (else (+ 1 (length (cdr list)))))))
+
+  (length fruits))
