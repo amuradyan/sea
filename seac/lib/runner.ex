@@ -6,9 +6,10 @@ defmodule SeaC.Runner do
     {:ok, symbols} = File.read(file)
 
     symbols
-      |> Tokenizer.tokenize
-      |> hd # this should not be here
-      |> Tokenizer.remove_parens
-      |> Evaluator.value
+    |> Tokenizer.tokenize()
+    # this should not be here
+    |> hd
+    |> Tokenizer.remove_parens()
+    |> Evaluator.value()
   end
 end

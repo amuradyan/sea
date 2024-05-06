@@ -30,6 +30,7 @@
 **/*.lock
 **/misc.ex
 **/misc_test.exs
+**/.*
 
 # Obsidian files
 **/.trash

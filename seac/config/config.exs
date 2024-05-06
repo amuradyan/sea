@@ -5,7 +5,7 @@ config :logger,
 
 config :logger, :error_log,
   path: "logs/debug.log",
-  level: :debug # Change this to :debug to start logging
+  # Change this to :debug to start logging
+  level: :debug
 
-config :logger, :console,
-  level: :info
+config :logger, :console, level: :info

@@ -10,8 +10,8 @@ defmodule SeaC.EvaluatorTests do
   end
 
   test "that we regard the Booleans as constants" do
-    assert Evaluator.meaning(:true, []) == true
-    assert Evaluator.meaning(:false ,[]) == false
+    assert Evaluator.meaning(true, []) == true
+    assert Evaluator.meaning(false, []) == false
   end
 
   test "that we regard some words as constants" do
@@ -19,10 +19,10 @@ defmodule SeaC.EvaluatorTests do
       Enum.map(ReservedWords.all(), fn word -> Evaluator.meaning(word, []) end)
 
     expected_outcome =
-      Enum.map(ReservedWords.values, fn word -> word end) ++
-      Enum.map(ReservedWords.primitives, fn word -> [:primitive, word] end)
+      Enum.map(ReservedWords.values(), fn word -> word end) ++
+        Enum.map(ReservedWords.primitives(), fn word -> [:primitive, word] end)
 
-    assert actions_for_reserved_words -- expected_outcome |> Enum.empty?()
+    assert (actions_for_reserved_words -- expected_outcome) |> Enum.empty?()
   end
 
   test "that we regard some expressions as identifiers" do
@@ -76,8 +76,8 @@ defmodule SeaC.EvaluatorTests do
     assert Evaluator.apply_primitive(:number?, [6.6]) == true
     assert Evaluator.apply_primitive(:number?, [[7]]) == false
     assert Evaluator.apply_primitive(:number?, [true]) == false
-    b1 = 10000000000000000000000000000000000000
-    b2 = 9999999999999999999999999999999999999
+    b1 = 10_000_000_000_000_000_000_000_000_000_000_000_000
+    b2 = 9_999_999_999_999_999_999_999_999_999_999_999_999
     assert Evaluator.apply_primitive(:+, [1, b2]) == b1
     assert Evaluator.apply_primitive(:-, [1, 2]) == -1
   end
@@ -93,7 +93,7 @@ defmodule SeaC.EvaluatorTests do
       [[:mek], [1]],
       [[:hing], [5]],
       [[:վեցուվեց], [6.6]],
-      [[:ծիծիլյառդ], [10000000000000000000000000000000000000]]
+      [[:ծիծիլյառդ], [10_000_000_000_000_000_000_000_000_000_000_000_000]]
     ]
 
     assert Evaluator.meaning([:cons, :a, :b], env) == [1, [2]]
@@ -113,8 +113,8 @@ defmodule SeaC.EvaluatorTests do
     assert Evaluator.meaning([:number?, :վեցուվեց], env) == true
     assert Evaluator.meaning([:number?, :list], env) == false
     assert Evaluator.meaning([:number?, true], env) == false
-    ծիծիլյառդումեկ = 10000000000000000000000000000000000001
-    իններ = 9999999999999999999999999999999999999
+    ծիծիլյառդումեկ = 10_000_000_000_000_000_000_000_000_000_000_000_001
+    իններ = 9_999_999_999_999_999_999_999_999_999_999_999_999
     assert Evaluator.meaning([:+, :ծիծիլյառդ, :mek], env) == ծիծիլյառդումեկ
     assert Evaluator.meaning([:-, :ծիծիլյառդ, :mek], env) == իններ
   end
@@ -150,12 +150,21 @@ defmodule SeaC.EvaluatorTests do
   end
 
   test "that we are able to calculate the values of expressions" do
-    program = [[[:lambda, [:պոպոկ],
-                [:lambda, [:պնդուկ],
-                   [:cond,
-                    [[:same?, :պնդուկ, :"2"], [:quote, :"ննդուկ"]],
-                    [:true, [:+, :պոպոկ, :"9"]]]]],
-              :"1"], :"3"]
+    program = [
+      [
+        [
+          :lambda,
+          [:պոպոկ],
+          [
+            :lambda,
+            [:պնդուկ],
+            [:cond, [[:same?, :պնդուկ, :"2"], [:quote, :ննդուկ]], [true, [:+, :պոպոկ, :"9"]]]
+          ]
+        ],
+        :"1"
+      ],
+      :"3"
+    ]
 
     assert Evaluator.value(:"4") == 4
     assert Evaluator.value(true) == true
