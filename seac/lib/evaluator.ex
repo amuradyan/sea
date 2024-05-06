@@ -9,7 +9,19 @@ defmodule SeaC.Evaluator do
       \nEnvironment: #{Kernel.inspect(env)}
     """)
 
-    mnng = expression_to_action(expression).(expression, env)
+    mnng =
+      case expression do
+        [[:define, name, value] | rest] ->
+          extended_env = define([:define, name, value], env)
+
+          case rest do
+            [expression] -> meaning(expression, extended_env)
+            _ -> meaning(rest, extended_env)
+          end
+
+        _ ->
+          expression_to_action(expression).(expression, env)
+      end
 
     Logger.debug("""
       \nMeaning of #{Kernel.inspect(expression)}

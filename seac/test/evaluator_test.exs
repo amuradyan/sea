@@ -15,6 +15,13 @@ defmodule SeaC.EvaluatorTests do
     assert Evaluator.define(y_as_lambda, env) == [[[:y], [value]], [[:four], [4]]]
   end
 
+  test "that we understand the meaning of definitions" do
+    env = []
+    x_plus_1 = [[:define, :x, :"1"], [:+, :x, :"1"]]
+
+    assert Evaluator.meaning(x_plus_1, env) == 2
+  end
+
   test "that we regard the numbers as constants" do
     assert Evaluator.meaning(:"7", []) == 7
     assert Evaluator.meaning(:"7.7", []) == 7.7

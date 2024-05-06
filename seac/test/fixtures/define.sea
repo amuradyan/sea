@@ -1,0 +1,4 @@
+((define a 1)
+ (define f (lambda (y) (+ a y)))
+
+ (f (+ 2 5)))
