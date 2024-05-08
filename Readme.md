@@ -2,7 +2,44 @@
 
 [![seac tests](https://github.com/amuradyan/sea/actions/workflows/main.yml/badge.svg)](https://github.com/amuradyan/sea/actions/workflows/main.yml)
 
-Here I will keep my notes on a programming language I'd like to code in. I am not final on what and how it should support, but ~~all~~ the design decisions tend to keep it as simple as possible, so it can be implemented fairly easily. I'd roughly describe it as a cross between [Scheme](https://www.scheme.org/) and [Erlang](https://www.erlang.org/) with a baked-in [ZIO](https://github.com/zio/zio).
+This is Sea, a [Lisp](https://en.wikipedia.org/wiki/Lisp_(programming_language))-like language implemented in [Elixir](https://elixir-lang.org/), and I will be shaping this language as I go, trying to ergonomically incorporate the ideas I find important. Among these the most prevalent are perhaps the ability to *speak of the domain* and *reason about composition soundness*, provided, typically, by the type systems, the idea of tests being integral to software development, modularity and concurrency.
 
-The name is intentionally chosen to be a homophone to the [C language](https://en.wikipedia.org/wiki/C_(programming_language)), to spread confusion amongst the ones discussing it.
+I plan to play with continuations and the concurrency of Elixir, the idea of composition via pipelines along with the idea of a computation that can fail or succeed in an environment, as in [ZIO](https://zio.dev/), try out some non-nomitaive static typing...
 
+The possibilities are endless.
+
+The name for the language is intentionally chosen to be a homophone to the [C language](https://en.wikipedia.org/wiki/C_(programming_language)), to spread confusion amongst those discussing it.
+
+At the moment you can do the following things in Sea.
+
+#### Length of a list via recursive definition
+
+```lisp
+( ; length of a list
+  (define fruits (quote (apple pineapple pie)))
+  (define length
+    (lambda (list)
+      (cond
+        ((null? list) 0)
+        (else (+ 1 (length (cdr list)))))))
+
+  (length fruits))
+```
+
+#### Length of a list via the [Y combinator](https://en.wikipedia.org/wiki/Fixed-point_combinator#Y_combinator).
+
+```lisp
+(((lambda (le) ; setting up with Y combinator
+    ((lambda (f) (f f))
+     (lambda (f)
+      (le (lambda (x) ((f f) x))))))
+  (lambda (length) ; calculating the length of a list
+        (lambda (l)
+          (cond
+            ((null? l) 0)
+            (else (+ 1 (length (cdr l)))))))) (quote (apple pineapple pie)))
+```
+
+## Build and run
+
+TBD
