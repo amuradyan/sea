@@ -3,7 +3,7 @@ defmodule SeaC.TokenizerTests do
   use ExUnit.Case
 
   test "should be able to tokenize a valid Sea program" do
-    {:ok, input} = File.read("test/fixtures/hello_world.sea")
+    {:ok, input} = File.read("test/fixtures/hello-world.sea")
 
     assert SeaC.Tokenizer.tokenize(input) ==
              %TokenSpace{
@@ -22,11 +22,11 @@ defmodule SeaC.TokenizerTests do
 
   test "that we ignore all the symbols till the end of the line after the semicolon" do
     input = """
-    asd ; this is a comment
-    asd
+    code ; this is a comment
+    another_code
     """
 
-    tokens = %TokenSpace{elements: [[:asd, :asd]]}
+    tokens = %TokenSpace{elements: [[:code, :another_code]]}
 
     assert SeaC.Tokenizer.tokenize(input) == tokens
   end
