@@ -10,9 +10,9 @@ The possibilities are endless.
 
 The name for the language is intentionally chosen to be a homophone to the [C language](https://en.wikipedia.org/wiki/C_(programming_language)), to spread confusion amongst those discussing it.
 
-At the moment you can do the following things in Sea.
+You can browse the [fixtures](./seac/test/fixtures/) for some Sea examples. Below are a few programms, just to give you a taste.
 
-#### Length of a list via recursive definition
+#### Length of a list via recursive definition \ [`length.sea`](./seac/test/fixtures/length.sea)
 
 ```lisp
 ( ; length of a list
@@ -26,7 +26,7 @@ At the moment you can do the following things in Sea.
   (length fruits))
 ```
 
-#### Length of a list via the [Y combinator](https://en.wikipedia.org/wiki/Fixed-point_combinator#Y_combinator).
+#### Length of a list via the [Y combinator](https://en.wikipedia.org/wiki/Fixed-point_combinator#Y_combinator) \ [`length-y.sea`](./seac/test/fixtures/length-y.sea)
 
 ```lisp
 (((lambda (le) ; setting up with Y combinator
