@@ -141,16 +141,39 @@ defmodule SeaC.Evaluator do
     second = fn l -> hd(tl(l)) end
 
     case name do
-      :cons -> [first.(values), second.(values)]
-      :car -> hd(first.(values))
-      :cdr -> tl(first.(values))
-      :null? -> first.(values) == []
-      :same? -> first.(values) == second.(values)
-      :atom? -> is_atom(first.(values))
-      :zero? -> first.(values) == 0
-      :number? -> is_number(first.(values))
-      :+ -> first.(values) + second.(values)
-      :- -> first.(values) - second.(values)
+      :cons ->
+        [first.(values), second.(values)]
+
+      :car ->
+        hd(first.(values))
+
+      :cdr ->
+        tl(first.(values))
+
+      :null? ->
+        first.(values) == []
+
+      :same? ->
+        first.(values) == second.(values)
+
+      :atom? ->
+        is_atom(first.(values))
+
+      :zero? ->
+        first.(values) == 0
+
+      :number? ->
+        is_number(first.(values))
+
+      # first.(values) + second.(values)
+      :+ ->
+        List.foldl(values, 0, fn e, acc -> acc + e end)
+
+      :- ->
+        List.foldl(tl(values), first.(values), fn e, acc -> acc - e end)
+
+      :/ ->
+        List.foldl(tl(values), first.(values), fn e, acc -> acc / e end)
     end
   end
 

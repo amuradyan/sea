@@ -9,7 +9,8 @@ defmodule SeaC.ReservedWords do
     :zero?,
     :number?,
     :-,
-    :+
+    :+,
+    :/
   ]
 
   @values [true, false]

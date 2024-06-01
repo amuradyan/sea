@@ -106,6 +106,7 @@ defmodule SeaC.EvaluatorTests do
       [[:empty_list], [[]]],
       [[:a], [1]],
       [[:b], [[2]]],
+      [[:g], [2]],
       [[:at], [:om]],
       [[:zro], [0]],
       [[:mek], [1]],
@@ -135,6 +136,7 @@ defmodule SeaC.EvaluatorTests do
     իններ = 9_999_999_999_999_999_999_999_999_999_999_999_999
     assert Evaluator.meaning([:+, :ծիծիլյառդ, :mek], env) == ծիծիլյառդումեկ
     assert Evaluator.meaning([:-, :ծիծիլյառդ, :mek], env) == իններ
+    assert Evaluator.meaning([:/, :a, :g, :g], env) == 0.25
   end
 
   test "that we are able to apply closures" do
@@ -186,7 +188,9 @@ defmodule SeaC.EvaluatorTests do
 
     assert Evaluator.value(:"4") == 4
     assert Evaluator.value(true) == true
-    assert Evaluator.value([:+, :"8", :"8"]) == 16
+    assert Evaluator.value([:+, :"8", :"8", :"8"]) == 24
+    assert Evaluator.value([:-, :"8", :"8", :"8"]) == -8
+    assert Evaluator.value([:/, :"4", :"2", :"2"]) == 1
     assert Evaluator.value(program) == 10
   end
 
