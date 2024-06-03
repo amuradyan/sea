@@ -40,6 +40,34 @@ You can browse the [fixtures](./seac/test/fixtures/) for some Sea examples. Belo
             (else (+ 1 (length (cdr l)))))))) (quote (apple pineapple pie)))
 ```
 
+## Structure
+
+### Evaluator
+TBD
+
+### Tokenizer
+TBD
+
+### Runner
+TBD
+
+
 ## Build and run
 
-TBD
+Clone the repo, go to `seac` folder and run:
+
+    $ mix deps.get
+
+To run the tests with a watcher, do:
+
+    $ mix test.watch
+
+To evaluate a Sea program, you should start the Elixir with Sea modules loaded, like so:
+
+    $ iex -S mix
+
+Then, use the [runner module](./seac/lib/runner.ex) and pass it the Sea file, as below:
+
+    iex(1)> SeaC.Runner.run("path/to/program.sea")
+
+Note that the *path* can be relative, as well as absolute
