@@ -104,6 +104,7 @@ defmodule SeaC.EvaluatorTests do
     env = [
       [[:list], [[1, [2]]]],
       [[:empty_list], [[]]],
+      [[:t, :f], [true, false]],
       [[:a], [1]],
       [[:b], [[2]]],
       [[:g], [2]],
@@ -137,6 +138,12 @@ defmodule SeaC.EvaluatorTests do
     assert Evaluator.meaning([:+, :ծիծիլյառդ, :mek], env) == ծիծիլյառդումեկ
     assert Evaluator.meaning([:-, :ծիծիլյառդ, :mek], env) == իններ
     assert Evaluator.meaning([:/, :a, :g, :g], env) == 0.25
+    assert Evaluator.meaning([:or, :t, :f], env) == true
+    assert Evaluator.meaning([:or, :f, :f], env) == false
+    assert Evaluator.meaning([:and, :t, :f], env) == false
+    assert Evaluator.meaning([:and, :t, :t], env) == true
+    assert Evaluator.meaning([:not, :t], env) == false
+    assert Evaluator.meaning([:not, :f], env) == true
   end
 
   test "that we are able to apply closures" do

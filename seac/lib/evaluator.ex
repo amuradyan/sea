@@ -165,7 +165,6 @@ defmodule SeaC.Evaluator do
       :number? ->
         is_number(first.(values))
 
-      # first.(values) + second.(values)
       :+ ->
         List.foldl(values, 0, fn e, acc -> acc + e end)
 
@@ -174,6 +173,15 @@ defmodule SeaC.Evaluator do
 
       :/ ->
         List.foldl(tl(values), first.(values), fn e, acc -> acc / e end)
+
+      :or ->
+        List.foldl(values, false, fn e, acc -> acc || e end)
+
+      :and ->
+        List.foldl(values, true, fn e, acc -> acc && e end)
+
+      :not ->
+        not first.(values)
     end
   end
 
