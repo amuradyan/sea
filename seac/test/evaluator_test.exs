@@ -138,6 +138,7 @@ defmodule SeaC.EvaluatorTests do
     assert Evaluator.meaning([:+, :ծիծիլյառդ, :mek], env) == ծիծիլյառդումեկ
     assert Evaluator.meaning([:-, :ծիծիլյառդ, :mek], env) == իններ
     assert Evaluator.meaning([:/, :a, :g, :g], env) == 0.25
+    assert Evaluator.meaning([:*, :hing, :g, :g], env) == 20
     assert Evaluator.meaning([:or, :t, :f], env) == true
     assert Evaluator.meaning([:or, :f, :f], env) == false
     assert Evaluator.meaning([:and, :t, :f], env) == false

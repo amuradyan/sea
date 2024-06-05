@@ -11,6 +11,7 @@ defmodule SeaC.ReservedWords do
     :-,
     :+,
     :/,
+    :*,
     :or,
     :and,
     :not

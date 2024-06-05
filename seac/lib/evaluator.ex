@@ -174,6 +174,9 @@ defmodule SeaC.Evaluator do
       :/ ->
         List.foldl(tl(values), first.(values), fn e, acc -> acc / e end)
 
+      :* ->
+        List.foldl(values, 1, fn e, acc -> acc * e end)
+
       :or ->
         List.foldl(values, false, fn e, acc -> acc || e end)
 
