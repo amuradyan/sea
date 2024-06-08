@@ -242,4 +242,10 @@ defmodule SeaC.EvaluatorTests do
 
     assert Evaluator.evaluate_clauses([false_clause, true_clause, else_clause], env) == 2
   end
+
+  test "that we handle stubs properly" do
+    program = [[:define, :stub, [:lambda, [:x], [:"???"]]], [:stub, :"1"]]
+
+    assert_raise RuntimeError, fn -> Evaluator.value(program) end
+  end
 end

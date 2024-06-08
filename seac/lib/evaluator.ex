@@ -79,6 +79,10 @@ defmodule SeaC.Evaluator do
     hd(expression) == :quote
   end
 
+  def stub?(expression) do
+    hd(expression) == :"???"
+  end
+
   def lambda?(expression) do
     hd(expression) == :lambda
   end
@@ -100,6 +104,7 @@ defmodule SeaC.Evaluator do
       Enum.empty?(expression) -> evaluate_application
       quote?(expression) -> evaluate_quote
       lambda?(expression) -> evaluate_lambda
+      stub?(expression) -> raise("To be implemented...")
       cond?(expression) -> evaluate_cond
       true -> evaluate_application
     end
