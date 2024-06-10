@@ -77,6 +77,9 @@ defmodule SeaC.EvaluatorTests do
 
   test "that we are able to apply primitive functions" do
     assert Evaluator.apply_primitive(:cons, [1, [2]]) == [1, [2]]
+    assert Evaluator.apply_primitive(:cons, [1, []]) == [1]
+    assert Evaluator.apply_primitive(:cons, [[], []]) == [[]]
+    assert Evaluator.apply_primitive(:cons, [[], 1]) == [1]
     assert Evaluator.apply_primitive(:car, [[1]]) == 1
     assert Evaluator.apply_primitive(:cdr, [[1, 2]]) == [2]
     assert Evaluator.apply_primitive(:null?, [[]]) == true

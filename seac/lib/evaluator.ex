@@ -147,7 +147,16 @@ defmodule SeaC.Evaluator do
 
     case name do
       :cons ->
-        [first.(values), second.(values)]
+        case {first.(values), second.(values)} do
+          {[], []} ->
+            [[]]
+          {[], _} ->
+            [second.(values)]
+          {_, []} ->
+            [first.(values)]
+          _ ->
+            [first.(values), second.(values)]
+        end
 
       :car ->
         hd(first.(values))
