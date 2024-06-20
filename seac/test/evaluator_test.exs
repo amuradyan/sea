@@ -76,10 +76,11 @@ defmodule SeaC.EvaluatorTests do
   end
 
   test "that we are able to apply primitive functions" do
-    assert Evaluator.apply_primitive(:cons, [1, [2]]) == [1, [2]]
+    assert Evaluator.apply_primitive(:cons, [1, [2]]) == [1, 2]
+    assert Evaluator.apply_primitive(:cons, [1, 2]) == [1, 2]
     assert Evaluator.apply_primitive(:cons, [1, []]) == [1]
     assert Evaluator.apply_primitive(:cons, [[], []]) == [[]]
-    assert Evaluator.apply_primitive(:cons, [[], 1]) == [1]
+    assert Evaluator.apply_primitive(:cons, [[], 1]) == [[], 1]
     assert Evaluator.apply_primitive(:car, [[1]]) == 1
     assert Evaluator.apply_primitive(:cdr, [[1, 2]]) == [2]
     assert Evaluator.apply_primitive(:null?, [[]]) == true
@@ -119,7 +120,8 @@ defmodule SeaC.EvaluatorTests do
       [[:ծիծիլյառդ], [10_000_000_000_000_000_000_000_000_000_000_000_000]]
     ]
 
-    assert Evaluator.meaning([:cons, :a, :b], env) == [1, [2]]
+    assert Evaluator.meaning([:cons, :"1", [:cons, :"2", [:quote, []]]], env) == [1, 2]
+    assert Evaluator.meaning([:cons, :a, :b], env) == [1, 2]
     assert Evaluator.meaning([:car, :list], env) == 1
     assert Evaluator.meaning([:cdr, :list], env) == [[2]]
     assert Evaluator.meaning([:null?, :empty_list], env) == true

@@ -148,14 +148,16 @@ defmodule SeaC.Evaluator do
     case name do
       :cons ->
         case {first.(values), second.(values)} do
-          {[], []} ->
-            [[]]
-          {[], _} ->
-            [second.(values)]
           {_, []} ->
             [first.(values)]
-          _ ->
-            [first.(values), second.(values)]
+          {[], _} ->
+            [[] | [second.(values)]]
+          {_, tail} ->
+            if is_list(tail) do
+              [first.(values) | second.(values)]
+            else
+              [first.(values), second.(values)]
+            end
         end
 
       :car ->
