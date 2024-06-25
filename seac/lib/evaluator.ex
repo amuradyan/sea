@@ -96,8 +96,11 @@ defmodule SeaC.Evaluator do
     evaluate_cond = fn _, env -> evaluate_clauses(tl(expression), env) end
     evaluate_application = fn _, env -> application(expression, env) end
 
-    evaluate_lambda = fn _, env ->
-      [:"non-primitive", [env, hd(tl(expression)), hd(tl(tl(expression)))]]
+    params_of = fn l -> hd(tl(l)) end
+    body_of = fn l -> hd(tl(tl(l))) end
+
+    evaluate_lambda = fn lambda, env ->
+      [:"non-primitive", [env, params_of.(lambda), body_of.(lambda)]]
     end
 
     cond do
@@ -150,8 +153,10 @@ defmodule SeaC.Evaluator do
         case {first.(values), second.(values)} do
           {_, []} ->
             [first.(values)]
+
           {[], _} ->
             [[] | [second.(values)]]
+
           {_, tail} ->
             if is_list(tail) do
               [first.(values) | second.(values)]
