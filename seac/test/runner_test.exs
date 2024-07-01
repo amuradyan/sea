@@ -12,4 +12,10 @@ defmodule SeaC.RunnerTests do
 
     assert SeaC.Runner.run(file) == 6
   end
+
+  test "that we can handle variadic parameters" do
+    file = "test/fixtures/varargs.sea"
+
+    assert SeaC.Runner.run(file) == [3, 4, 5]
+  end
 end

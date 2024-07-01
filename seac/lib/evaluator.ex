@@ -1,5 +1,6 @@
 defmodule SeaC.Evaluator do
   require Logger
+
   alias SeaC.Environment
   alias SeaC.ReservedWords
 
@@ -209,11 +210,37 @@ defmodule SeaC.Evaluator do
     end
   end
 
+  def create_closure_env_entry(formals, values) do
+    create_closure_env_entry(formals, values, [[], []])
+  end
+
+  def create_closure_env_entry(formals, values, entry) do
+    # TODO: solve for same name formals
+    # TODO: solve for more than one variadic params
+    # TODO: solve for variadic params not at the end of the formal list
+    case {formals, values} do
+      {[first_formal | other_formals], [first_value | other_values]} ->
+        cond do
+          String.starts_with?(Atom.to_string(first_formal), ".") ->
+            Environment.extend_entry(entry, first_formal, values)
+          true ->
+            extended_entry =
+              Environment.extend_entry(entry, first_formal, first_value)
+
+              create_closure_env_entry(other_formals, other_values, extended_entry)
+        end
+      {[], _} -> entry
+    end
+  end
+
   def apply_closure(closure, values, outer_env) do
     case closure do
       [table, formals, body] ->
+        entry =
+          create_closure_env_entry(formals, values)
+
         env =
-          Environment.extend_environment(table, [formals, values]) ++
+          Environment.extend_environment(table, entry) ++
             outer_env
 
         Logger.debug("""

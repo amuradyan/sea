@@ -1,0 +1,6 @@
+( ; Variadic functions
+  (define first-rest
+    (lambda (first second .rest)
+      (cons (+ first second) .rest)))
+
+  (first-rest 1 2 4 5))

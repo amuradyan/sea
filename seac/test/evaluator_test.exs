@@ -152,16 +152,6 @@ defmodule SeaC.EvaluatorTests do
     assert Evaluator.meaning([:not, :f], env) == true
   end
 
-  test "that we are able to apply closures" do
-    closure_table = []
-    closure_formals = [:x]
-    closure_body = :x
-
-    closure = [closure_table, closure_formals, closure_body]
-
-    assert Evaluator.apply_closure(closure, [5], []) == 5
-  end
-
   test "that we can tell a primitive call from a non-primitive one and nest them" do
     closure_table = []
     closure_formals = [:x, :y]

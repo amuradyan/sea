@@ -33,4 +33,11 @@ defmodule SeaC.Environment do
   end
 
   def extend_environment(env, entry), do: [entry | env]
+
+  def extend_entry(entry, formal, value) do
+    formals_of = fn entry -> hd(entry) end
+    values_of = fn entry -> hd(tl(entry)) end
+
+    [formals_of.(entry) ++ [formal], values_of.(entry) ++ [value]]
+  end
 end

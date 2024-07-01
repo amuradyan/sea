@@ -7,7 +7,17 @@ defmodule SeaC.EnvironmentTest do
     env = [[[:r], [9]]]
     entry = [[:l], [10]]
 
-    assert Environment.extend_environment(env, entry) == [[[:l], [10]], [[:r], [9]]]
+    extended_environment = Environment.extend_environment(env, entry)
+
+    assert extended_environment == [[[:l], [10]], [[:r], [9]]]
+  end
+
+  test "that we are able to extend the entry" do
+    entry = [[:v, :l], [0, 10]]
+
+    extended_entry = Environment.extend_entry(entry, :m, 20)
+
+    assert extended_entry == [[:v, :l, :m], [0, 10, 20]]
   end
 
   test "that we are able to lookup the value of a known name" do
