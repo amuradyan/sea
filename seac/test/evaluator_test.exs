@@ -109,25 +109,22 @@ defmodule SeaC.EvaluatorTests do
       [[:list], [[1, [2]]]],
       [[:empty_list], [[]]],
       [[:t, :f], [true, false]],
-      [[:a], [1]],
       [[:b], [[2]]],
-      [[:g], [2]],
       [[:at], [:om]],
       [[:zro], [0]],
       [[:mek], [1]],
+      [[:erku], [2]],
       [[:hing], [5]],
       [[:վեցուվեց], [6.6]],
       [[:ծիծիլյառդ], [10_000_000_000_000_000_000_000_000_000_000_000_000]]
     ]
 
     assert Evaluator.meaning([:cons, :"1", [:cons, :"2", [:quote, []]]], env) == [1, 2]
-    assert Evaluator.meaning([:cons, :a, :b], env) == [1, 2]
+    assert Evaluator.meaning([:cons, :mek, :b], env) == [1, 2]
     assert Evaluator.meaning([:car, :list], env) == 1
     assert Evaluator.meaning([:cdr, :list], env) == [[2]]
     assert Evaluator.meaning([:null?, :empty_list], env) == true
     assert Evaluator.meaning([:null?, :list], env) == false
-    assert Evaluator.meaning([:same?, :a, :b], env) == false
-    assert Evaluator.meaning([:same?, :a, :a], env) == true
     assert Evaluator.meaning([:atom?, :at], env) == true
     assert Evaluator.meaning([:atom?, :list], env) == false
     assert Evaluator.meaning([:atom?, true], env) == true
@@ -142,14 +139,30 @@ defmodule SeaC.EvaluatorTests do
     իններ = 9_999_999_999_999_999_999_999_999_999_999_999_999
     assert Evaluator.meaning([:+, :ծիծիլյառդ, :mek], env) == ծիծիլյառդումեկ
     assert Evaluator.meaning([:-, :ծիծիլյառդ, :mek], env) == իններ
-    assert Evaluator.meaning([:/, :a, :g, :g], env) == 0.25
-    assert Evaluator.meaning([:*, :hing, :g, :g], env) == 20
+    assert Evaluator.meaning([:/, :mek, :erku, :erku], env) == 0.25
+    assert Evaluator.meaning([:*, :hing, :erku, :erku], env) == 20
     assert Evaluator.meaning([:or, :t, :f], env) == true
     assert Evaluator.meaning([:or, :f, :f], env) == false
     assert Evaluator.meaning([:and, :t, :f], env) == false
     assert Evaluator.meaning([:and, :t, :t], env) == true
     assert Evaluator.meaning([:not, :t], env) == false
     assert Evaluator.meaning([:not, :f], env) == true
+    assert Evaluator.meaning([:same?, :mek, :b], env) == false
+    assert Evaluator.meaning([:same?, :mek, :mek], env) == true
+    assert Evaluator.meaning([:lt?, :mek, :erku], env) == true
+    assert Evaluator.meaning([:lt?, :mek, :mek], env) == false
+    assert Evaluator.meaning([:lt?, :mek, :zro], env) == false
+    assert Evaluator.meaning([:lte?, :mek, :erku], env) == true
+    assert Evaluator.meaning([:lte?, :mek, :mek], env) == true
+    assert Evaluator.meaning([:lte?, :mek, :zro], env) == false
+    assert Evaluator.meaning([:gt?, :mek, :erku], env) == false
+    assert Evaluator.meaning([:gt?, :mek, :mek], env) == false
+    assert Evaluator.meaning([:gt?, :mek, :zro], env) == true
+    assert Evaluator.meaning([:gte?, :mek, :erku], env) == false
+    assert Evaluator.meaning([:gte?, :mek, :mek], env) == true
+    assert Evaluator.meaning([:gte?, :mek, :zro], env) == true
+    assert Evaluator.meaning([:ne?, :mek, :erku], env) == true
+    assert Evaluator.meaning([:ne?, :mek, :mek], env) == false
   end
 
   test "that we can tell a primitive call from a non-primitive one and nest them" do

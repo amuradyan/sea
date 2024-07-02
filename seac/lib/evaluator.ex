@@ -175,9 +175,6 @@ defmodule SeaC.Evaluator do
       :null? ->
         first.(values) == []
 
-      :same? ->
-        first.(values) == second.(values)
-
       :atom? ->
         is_atom(first.(values))
 
@@ -207,7 +204,26 @@ defmodule SeaC.Evaluator do
 
       :not ->
         not first.(values)
-    end
+
+      :same? ->
+        first.(values) == second.(values)
+
+      :lt? ->
+        first.(values) < second.(values)
+
+      :lte? ->
+        first.(values) <= second.(values)
+
+      :gt? ->
+        first.(values) > second.(values)
+
+      :gte? ->
+        first.(values) >= second.(values)
+
+      :ne? ->
+        first.(values) != second.(values)
+
+      end
   end
 
   def create_closure_env_entry(formals, values) do

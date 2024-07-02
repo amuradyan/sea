@@ -14,7 +14,12 @@ defmodule SeaC.ReservedWords do
     :*,
     :or,
     :and,
-    :not
+    :not,
+    :lt?,
+    :lte?,
+    :gt?,
+    :gte?,
+    :ne?
   ]
 
   @values [true, false]
