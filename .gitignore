@@ -35,3 +35,7 @@
 # Obsidian files
 **/.trash
 **/.obsidian
+
+# Testing sandbox
+**/sandbox_test.exs
+**/sandbox.sea
