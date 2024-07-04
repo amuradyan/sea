@@ -1,0 +1,5 @@
+( ; Shorthand for creating a list of elements
+  (define list
+    (lambda (.elements) .elements))
+
+  (list 1 (quote 2) (quote պնդուկ) (cons 1 (cons 2 (quote ())))))
