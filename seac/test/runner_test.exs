@@ -18,4 +18,15 @@ defmodule SeaC.RunnerTests do
 
     assert SeaC.Runner.run(file) == [3, 4, 5]
   end
+
+  test "the N-queen problem" do
+    file = "test/fixtures/n-queens.sea"
+
+    assert SeaC.Runner.run(file) ==
+             [
+               [[1, 3], [2, 1]],
+               [[1, 1], [2, 3]]
+             ]
+  end
+
 end

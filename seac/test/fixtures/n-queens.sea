@@ -1,0 +1,50 @@
+; On the board below, the position of Q is (2 3)
+;
+;   \ 1 2 3
+;   1 # # #
+;   2 # # Q
+
+; The following are the two solution for
+;   (solve 2 3 2)
+; , where x marks the covered lines
+;
+;   \ 1 2 3
+;   1 x x Q  ... (1 3)
+;   2 Q x x  ... (2 1)
+;
+;   \ 1 2 3
+;   1 Q x x  ... (1 1)
+;   2 x x Q  ... (2 3)
+
+( ; The n-queens problem
+  (define max-x 3)
+  (define max-y 3)
+
+  (define pair cons)
+
+  (define generate-board
+    (lambda (x y)
+      (
+        (define generate-board-helper
+          (lambda (current-x current-y)
+            (cond
+              ((and (same? current-x x) (same? current-y y))
+                (cons
+                  (pair current-x current-y)
+                  (quote ())))
+              ((and (lt? current-x x) (same? current-y y))
+                (cons
+                  (pair current-x current-y)
+                  (generate-board-helper (+ 1 current-x) 1)))
+              (else
+                (cons
+                  (pair current-x current-y)
+                  (generate-board-helper current-x (+ 1 current-y)))))))
+
+        (generate-board-helper 1 1))))
+
+  (define solve
+    (lambda (height width queens)
+      (???)))
+
+  (solve 2 3 2))
