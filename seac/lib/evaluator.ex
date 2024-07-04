@@ -73,7 +73,12 @@ defmodule SeaC.Evaluator do
   def reserved?(expression), do: ReservedWords.contains(expression)
 
   def text_of(expression, _ \\ []) do
-    hd(tl(expression))
+    token = hd(tl(expression))
+
+    case to_number(token) do
+      {:ok, number} -> number
+      _ -> token
+    end
   end
 
   def quote?(expression) do

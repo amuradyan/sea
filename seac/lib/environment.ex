@@ -4,9 +4,9 @@ defmodule SeaC.Environment do
       [] ->
         fallback.()
 
-      [first | rest] ->
+      [entry | rest] ->
         entry_lookup(
-          first,
+          entry,
           name,
           fn -> environment_lookup(rest, name, fallback) end
         )
