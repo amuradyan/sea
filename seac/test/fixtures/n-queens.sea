@@ -1,9 +1,10 @@
 ; On the board below, the position of Q is (2 3)
+; First goes the rank, then the file
 ;
 ;   \ 1 2 3
 ;   1 # # #
 ;   2 # # Q
-
+;
 ; The following are the two solution for
 ;   (solve 2 3 2)
 ; , where x marks the covered lines
@@ -17,10 +18,133 @@
 ;   2 x x Q  ... (2 3)
 
 ( ; The n-queens problem
-  (define max-x 3)
-  (define max-y 3)
+  (define max-file 4)
+  (define max-rank 4)
 
-  (define pair cons)
+  (define position cons)
+
+  (define increment
+    (lambda (number) (+ number 1)))
+
+  (define decrement
+    (lambda (number) (- number 1)))
+
+  (define rank-of car)
+
+  (define file-of
+    (lambda (position) (car (cdr position))))
+
+  (define list
+    (lambda (.elements) .elements))
+
+  ; Should return the car id there's only one element
+  (define identity
+    (lambda (.value) .value))
+
+  (define queen-at identity)
+
+  (define calculate-covered-files
+    (lambda (queen)
+      (
+        (define file (file-of queen))
+
+        (define loop
+          (lambda (rank)
+            (cond
+              ((same? rank max-rank)
+                (list (position rank file)))
+              (else
+                (cons
+                  (position rank file)
+                  (loop (increment rank)))))))
+
+        (loop 1))))
+
+  (define calculate-covered-ranks
+    (lambda (queen)
+      (
+        (define rank (rank-of queen))
+
+        (define loop
+          (lambda (file)
+            (cond
+              ((same? file max-file)
+                (list (position rank file)))
+              (else
+                (cons
+                  (position rank file)
+                  (loop (increment file)))))))
+
+        (loop 1))))
+
+  (define find-anti-diagonal-origin
+    (lambda (square)
+      (
+        (define rank-distance
+          (- (file-of square) 1))
+        (define file-distance
+          (- max-file (rank-of square)))
+
+        (cond
+          ((lt? rank-distance file-distance)
+            (position
+              (+ (file-of square) rank-distance)
+              (- (rank-of square) rank-distance)))
+          ((gt? rank-distance file-distance)
+            (position
+              (+ (file-of square) file-distance)
+              (- (rank-of square) file-distance)))
+          (else
+            (position max-file 1))))))
+
+  (define calculate-covered-anti-diagonal
+    (lambda (queen)
+      (
+        (define origin
+          (find-anti-diagonal-origin queen))
+
+        (define loop
+          (lambda (rank file)
+            (cond
+              ((or (same? rank 1) (same? file max-file))
+                (list (position rank file)))
+              (else
+                (cons
+                  (position rank file)
+                  (loop (decrement rank) (increment file)))))))
+
+        (loop (rank-of origin) (file-of origin)))))
+
+  (define find-main-diagonal-origin
+    (lambda (square)
+      (
+        (define square-rank (rank-of square))
+        (define square-file (file-of square))
+
+        (cond
+          ((lt? square-rank square-file)
+            (position 1 (increment (- square-file square-rank))))
+          ((lt? square-file square-rank)
+            (position (increment (- square-rank square-file)) 1))
+          (else (position 1 1))))))
+
+  (define calculate-covered-main-diagonal
+    (lambda (queen)
+      (
+        (define origin
+          (find-main-diagonal-origin queen))
+
+        (define loop
+          (lambda (rank file)
+            (cond
+              ((or (same? max-rank rank) (same? max-file file))
+                (list (position rank file)))
+              (else
+                (cons
+                  (position rank file)
+                  (loop (increment rank) (increment file)))))))
+
+        (loop (rank-of origin) (file-of origin))))))
 
   (define generate-board
     (lambda (x y)
