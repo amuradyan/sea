@@ -1,0 +1,15 @@
+(  ; Evaluates to its' argument
+  (define identity
+    (lambda (.value)
+      (cond
+        ((null? .value) (quote ()))
+        (else (car .value)))))
+
+  (cons
+    (identity (quote ()))
+    (cons
+      (identity (quote ճպուռ))
+      (cons
+        (identity
+          (cons (quote մրջյուն) (cons (quote թրթուռ) (quote ()))))
+          (quote ())))))
