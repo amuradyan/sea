@@ -7,5 +7,15 @@ defmodule SeaC.PreludeTests do
 
       assert SeaC.Runner.run(file) == [1, 2, :պնդուկ, [1, 2]]
     end
+
+    test "identity" do
+      file = "test/fixtures/prelude/identity.sea"
+
+      assert SeaC.Runner.run(file) == [
+        [],
+        :ճպուռ,
+        [:մրջյուն, :թրթուռ]
+      ]
+    end
   end
 end
