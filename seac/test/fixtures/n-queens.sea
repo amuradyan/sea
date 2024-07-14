@@ -144,7 +144,7 @@
                   (position rank file)
                   (loop (increment rank) (increment file)))))))
 
-        (loop (rank-of origin) (file-of origin))))))
+        (loop (rank-of origin) (file-of origin)))))
 
   (define generate-board
     (lambda (x y)
