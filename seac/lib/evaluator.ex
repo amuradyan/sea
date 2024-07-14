@@ -160,9 +160,6 @@ defmodule SeaC.Evaluator do
           {_, []} ->
             [first.(values)]
 
-          {[], _} ->
-            [[] | [second.(values)]]
-
           {_, tail} ->
             if is_list(tail) do
               [first.(values) | second.(values)]
