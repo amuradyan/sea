@@ -3,7 +3,8 @@
     (lambda (.value)
       (cond
         ((null? .value) (quote ()))
-        (else (car .value)))))
+        ((null? (cdr .value)) (car .value))
+        (else .value))))
 
   (cons
     (identity (quote ()))
