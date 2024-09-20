@@ -224,8 +224,7 @@ defmodule SeaC.Evaluator do
 
       :ne? ->
         first.(values) != second.(values)
-
-      end
+    end
   end
 
   def create_closure_env_entry(formals, values) do
@@ -241,13 +240,16 @@ defmodule SeaC.Evaluator do
         cond do
           String.starts_with?(Atom.to_string(first_formal), ".") ->
             Environment.extend_entry(entry, first_formal, values)
+
           true ->
             extended_entry =
               Environment.extend_entry(entry, first_formal, first_value)
 
-              create_closure_env_entry(other_formals, other_values, extended_entry)
+            create_closure_env_entry(other_formals, other_values, extended_entry)
         end
-      {[], _} -> entry
+
+      {[], _} ->
+        entry
     end
   end
 
