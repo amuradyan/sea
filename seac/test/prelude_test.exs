@@ -1,6 +1,7 @@
 defmodule SeaC.PreludeTests do
   use ExUnit.Case
 
+  @tag :prelude
   describe "Prelude" do
     test "list" do
       file = "test/fixtures/prelude/list.sea"
@@ -12,10 +13,11 @@ defmodule SeaC.PreludeTests do
       file = "test/fixtures/prelude/identity.sea"
 
       assert SeaC.Runner.run(file) == [
-        [],
-        :ճպուռ,
-        [:մրջյուն, :թրթուռ]
-      ]
+               [],
+               :ճպուռ,
+               [:մատակ],
+               [:մրջյուն, :թրթուռ]
+             ]
     end
   end
 end

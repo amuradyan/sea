@@ -1,16 +1,13 @@
 (  ; Evaluates to its' argument
-  (define identity
-    (lambda (.value)
-      (cond
-        ((null? .value) (quote ()))
-        ((null? (cdr .value)) (car .value))
-        (else .value))))
+  (define identity(lambda (value) value))
 
   (cons
     (identity (quote ()))
     (cons
       (identity (quote ճպուռ))
       (cons
-        (identity
-          (cons (quote մրջյուն) (cons (quote թրթուռ) (quote ()))))
-          (quote ())))))
+        (identity (cons (quote մատակ) (quote ())))
+        (cons
+          (identity
+            (cons (quote մրջյուն) (cons (quote թրթուռ) (quote ()))))
+            (quote ()))))))
