@@ -1,0 +1,13 @@
+( ; Maps all elements of a list with a function
+  (define map
+    (lambda (as f)
+      (cond
+        ((null? as) (quote ()))
+        (else
+          (cons (f (car as)) (map (cdr as) f))))))
+
+  (cons
+    (map (cons 1 (cons 2 (cons 3 (quote ())))) (lambda (number) (+ number 1)))
+    (cons
+      (map (quote ()) (lambda (x) (- x 10)))
+      (quote ()))))
