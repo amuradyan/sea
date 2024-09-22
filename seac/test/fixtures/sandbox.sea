@@ -1,0 +1,138 @@
+( ; Sandbox
+  (define max-file 4)
+  (define max-rank 4)
+
+  (define increment
+    (lambda (number) (+ number 1)))
+
+  (define decrement
+    (lambda (number) (- number 1)))
+
+  (define rank-of car)
+
+  (define file-of
+    (lambda (position) (car (cdr position))))
+
+  (define list
+    (lambda (.elements) .elements))
+
+  (define Square list)
+
+  (define queen-at list)
+
+  (define identity
+    (lambda (value) value))
+
+  (define calculate-covered-files
+    (lambda (queen)
+      (
+        (define file (file-of queen))
+
+        (define loop
+          (lambda (rank)
+            (cond
+              ((same? rank max-rank)
+                (list (Square rank file)))
+              (else
+                (cons
+                  (Square rank file)
+                  (loop (increment rank)))))))
+
+        (loop 1))))
+
+  (define calculate-covered-ranks
+    (lambda (queen)
+      (
+        (define rank (rank-of queen))
+
+        (define loop
+          (lambda (file)
+            (cond
+              ((same? file max-file)
+                (list (Square rank file)))
+              (else
+                (cons
+                  (Square rank file)
+                  (loop (increment file)))))))
+
+        (loop 1))))
+
+  (define find-anti-diagonal-origin
+    (lambda (cell)
+      (
+        (define rank-distance
+          (- (file-of cell) 1))
+        (define file-distance
+          (- max-file (rank-of cell)))
+
+        (cond
+          ((lt? rank-distance file-distance)
+            (position
+              (+ (file-of cell) rank-distance)
+              (- (rank-of cell) rank-distance)))
+          ((gt? rank-distance file-distance)
+            (position
+              (+ (file-of cell) file-distance)
+              (- (rank-of cell) file-distance)))
+          (else
+            (Square max-file 1))))))
+
+  (define calculate-covered-anti-diagonal
+    (lambda (queen)
+      (
+        (define origin
+          (find-anti-diagonal-origin queen))
+
+        (define loop
+          (lambda (rank file)
+            (cond
+              ((or (same? rank 1) (same? file max-file))
+                (list (Square rank file)))
+              (else
+                (cons
+                  (Square rank file)
+                  (loop (decrement rank) (increment file)))))))
+
+        (loop (rank-of origin) (file-of origin)))))
+
+  (define find-main-diagonal-origin
+    (lambda (cell)
+      (
+        (define cell-rank (rank-of cell))
+        (define cell-file (file-of cell))
+
+        (cond
+          ((lt? cell-rank cell-file)
+            (Square 1 (increment (- cell-file cell-rank))))
+          ((lt? cell-file cell-rank)
+            (Square (increment (- cell-rank cell-file)) 1))
+          (else (Square 1 1))))))
+
+  (define calculate-covered-main-diagonal
+    (lambda (queen)
+      (
+        (define origin
+          (find-main-diagonal-origin queen))
+
+        (define loop
+          (lambda (rank file)
+            (cond
+              ((or (same? max-rank rank) (same? max-file file))
+                (list (Square rank file)))
+              (else
+                (cons
+                  (Square rank file)
+                  (loop (increment rank) (increment file)))))))
+
+        (loop (rank-of origin) (file-of origin)))))
+
+  (define merge-guarded-positions
+    (lambda (position)
+      (list
+        (calculate-covered-main-diagonal (queen-at 2 3))
+        (calculate-covered-anti-diagonal (queen-at 2 3))
+        (calculate-covered-files (queen-at 2 3))
+        (calculate-covered-ranks (queen-at 2 3)))))
+
+  (merge-guarded-positions (queen-at 2 3))
+  )
