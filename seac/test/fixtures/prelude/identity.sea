@@ -1,4 +1,9 @@
 (  ; Evaluates to its' argument
+<<<<<<< HEAD
+=======
+  (define identity
+    (lambda (value) value))
+>>>>>>> bbe7c37 (chore: tagging the tests)
 
   ; IMPORTS
   (define list
