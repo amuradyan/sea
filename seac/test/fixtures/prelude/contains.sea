@@ -1,0 +1,15 @@
+( ; Check if a list contains a value
+  (define contains?
+    (lambda (list value)
+      (cond
+        ((null? list) false)
+        ((same? (car list) value) true)
+        (else (contains? (cdr list) value)))))
+
+  (cons
+    (contains? (quote ()) 3)
+    (cons
+      (contains? (cons 1 (cons (quote (a b)) (quote ()))) (quote (a b)))
+      (cons
+        (contains? (cons 1 (cons 2 (quote ()))) "2")
+        (quote ()))))

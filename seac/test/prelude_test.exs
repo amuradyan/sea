@@ -34,5 +34,12 @@ defmodule SeaC.PreludeTests do
 
       assert SeaC.Runner.run(file) == [6, 0]
     end
+
+    @tag :prelude
+    test "contains" do
+      file = "test/fixtures/prelude/contains.sea"
+
+      assert SeaC.Runner.run(file) == [false, true, false]
+    end
   end
 end
