@@ -27,5 +27,12 @@ defmodule SeaC.PreludeTests do
                [:մրջյուն, :թրթուռ]
              ]
     end
+
+    @tag :prelude
+    test "fold" do
+      file = "test/fixtures/prelude/fold.sea"
+
+      assert SeaC.Runner.run(file) == [6, 0]
+    end
   end
 end

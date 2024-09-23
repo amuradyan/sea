@@ -1,0 +1,12 @@
+( ; folds a list with a function and an accumulator
+  (define fold
+    (lambda (as f acc)
+      (cond
+        ((null? as) acc)
+        (else (fold (cdr as) f (f acc (car as)))))))
+
+  (cons
+    (fold (cons 1 (cons 2 (cons 3 (quote ())))) (lambda (number acc) (+ number acc)) 0)
+    (cons
+      (fold (quote ()) (lambda (x acc) (- x acc)) 0)
+      (quote ()))))
