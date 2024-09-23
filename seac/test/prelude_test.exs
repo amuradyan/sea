@@ -17,5 +17,12 @@ defmodule SeaC.PreludeTests do
         [:մրջյուն, :թրթուռ]
       ]
     end
+
+    @tag :prelude
+    test "contains" do
+      file = "test/fixtures/prelude/contains.sea"
+
+      assert SeaC.Runner.run(file) == [false, true, false]
+    end
   end
 end
