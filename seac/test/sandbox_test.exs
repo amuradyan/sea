@@ -1,8 +1,8 @@
 defmodule SeaC.SandboxTests do
   use ExUnit.Case
 
-  @tag :sandbox
   describe "Sandbox" do
+    @tag :sandbox
     test "doing stuff" do
       file = "test/fixtures/sandbox.sea"
 

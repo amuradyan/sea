@@ -1,5 +1,6 @@
 (  ; Evaluates to its' argument
-  (define identity(lambda (value) value))
+  (define identity
+    (lambda (value) value))
 
   (cons
     (identity (quote ()))
