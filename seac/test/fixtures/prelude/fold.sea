@@ -1,0 +1,16 @@
+( ; folds a list with a function and an accumulator
+
+  ; IMPORTS
+  (define list
+    (lambda (.elements) .elements))
+  ; IMPORTS
+
+  (define fold
+    (lambda (as acc f)
+      (cond
+        ((null? as) acc)
+        (else (fold (cdr as) (f acc (car as)) f)))))
+
+  (list
+    (fold (list 1 2 3) 0 (lambda (number acc) (+ number acc)))
+    (fold (quote ()) 0 (lambda (x acc) (- x acc)))))

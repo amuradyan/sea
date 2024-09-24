@@ -1,4 +1,10 @@
 (  ; Evaluates to its' argument
+
+  ; IMPORTS
+  (define list
+    (lambda (.elements) .elements))
+  ; IMPORTS
+
   (define identity
     (lambda (.value)
       (cond
@@ -6,11 +12,17 @@
         ((null? (cdr .value)) (car .value))
         (else .value))))
 
-  (cons
+  (list
     (identity (quote ()))
+<<<<<<< HEAD
     (cons
       (identity (quote ճպուռ))
       (cons
         (identity
           (cons (quote մրջյուն) (cons (quote թրթուռ) (quote ()))))
           (quote ())))))
+=======
+    (identity (quote ճպուռ))
+    (identity (list (quote մատակ)))
+    (identity (list (quote մրջյուն) (quote թրթուռ)))))
+>>>>>>> 17e8a00 (chore: reusing list, making prelude more readable)

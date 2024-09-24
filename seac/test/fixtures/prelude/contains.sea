@@ -1,0 +1,18 @@
+( ; Check if a list contains a value
+
+  ; IMPORTS
+  (define list
+    (lambda (.elements) .elements))
+  ; IMPORTS
+
+  (define contains?
+    (lambda (list value)
+      (cond
+        ((null? list) false)
+        ((same? (car list) value) true)
+        (else (contains? (cdr list) value)))))
+
+  (list
+    (contains? (quote ()) 3)
+    (contains? (list 1 (quote (a b))) (quote (a b)))
+    (contains? (list 1 2) "2")))
