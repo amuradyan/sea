@@ -21,10 +21,17 @@
   (define union
     (lambda (left right)
       (cond
+<<<<<<< HEAD
         ((null? left) right)
         ((null? right) left)
         ((contains? left (car right)) (union left (cdr right)))
         (else (union (append left (list (car right))) (cdr right))))))
+=======
+      ((null? left) right)
+      ((null? right) left)
+      ((contains? left (car right)) (union left (cdr right)))
+      (else (union (append left (car right)) (cdr right))))))
+>>>>>>> c7a53a1 (feat: `append` and `union` in prelude)
 
   (list
     (union (list 1) (list 1 3))

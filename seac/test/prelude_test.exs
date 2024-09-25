@@ -63,5 +63,19 @@ defmodule SeaC.PreludeTests do
       assert SeaC.Runner.run_file(file) == [[1, 3], [2], [4], []]
 >>>>>>> b761346 (feat: running Sea more conveniently)
     end
+
+    @tag :prelude
+    test "append" do
+      file = "test/fixtures/prelude/append.sea"
+
+      assert SeaC.Runner.run(file) == [[1, 2, 3, 4], [1, 2], [1, 2], []]
+    end
+
+    @tag :prelude
+    test "union" do
+      file = "test/fixtures/prelude/union.sea"
+
+      assert SeaC.Runner.run(file) == [[1, 3], [2], [4], []]
+    end
   end
 end

@@ -1,0 +1,18 @@
+( ; Appends two lists
+
+  ; IMPORTS
+  (define list
+    (lambda (.elements) .elements))
+  ; IMPORTS
+
+  (define append
+    (lambda (left right)
+      (cond
+        ((null? left) right)
+        (else (cons (car left) (append (cdr left) right))))))
+
+  (list
+    (append (list 1 2) (list 3 4))
+    (append (quote ()) (list 1 2))
+    (append (list 1 2) (quote ()))
+    (append (quote ()) (quote ()))))
