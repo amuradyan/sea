@@ -1,0 +1,33 @@
+( ; Merging two lists without duplicates
+
+  ; IMPORTS
+  (define list
+    (lambda (.elements) .elements))
+
+  (define contains?
+    (lambda (list value)
+      (cond
+        ((null? list) false)
+        ((same? (car list) value) true)
+        (else (contains? (cdr list) value)))))
+
+  (define append
+    (lambda (left right)
+      (cond
+        ((null? left) right)
+        (else (cons (car left) (append (cdr left) right))))))
+  ; IMPORTS
+
+  (define union
+    (lambda (left right)
+      (cond
+      ((null? left) right)
+      ((null? right) left)
+      ((contains? left (car right)) (union left (cdr right)))
+      (else (union (append left (car right)) (cdr right))))))
+
+  (list
+    (union (list 1) (list 1 3))
+    (union (quote ()) (list 2))
+    (union (list 4) (quote ()))
+    (union (quote ()) (quote ()))))
