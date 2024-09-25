@@ -3,6 +3,7 @@ defmodule SeaC.EnvironmentTest do
 
   alias SeaC.Environment
 
+  @tag :environment
   test "that we are able to extend the environment" do
     env = [[[:r], [9]]]
     entry = [[:l], [10]]
@@ -12,6 +13,7 @@ defmodule SeaC.EnvironmentTest do
     assert extended_environment == [[[:l], [10]], [[:r], [9]]]
   end
 
+  @tag :environment
   test "that we are able to extend the entry" do
     entry = [[:v, :l], [0, 10]]
 
@@ -20,6 +22,7 @@ defmodule SeaC.EnvironmentTest do
     assert extended_entry == [[:v, :l, :m], [0, 10, 20]]
   end
 
+  @tag :environment
   test "that we are able to lookup the value of a known name" do
     env = [[[:x], [7]], [[:y], [9]]]
     name = :y
@@ -34,6 +37,7 @@ defmodule SeaC.EnvironmentTest do
     assert value == 9
   end
 
+  @tag :environment
   test "that we gracefully handle the lookup in an empty table" do
     name = :x
 
@@ -47,6 +51,7 @@ defmodule SeaC.EnvironmentTest do
     assert value == "Unable to resolve x"
   end
 
+  @tag :environment
   test "that we gracefully handle unknown names in environments" do
     env = [[[:x], [7]]]
     name = :y
@@ -61,6 +66,7 @@ defmodule SeaC.EnvironmentTest do
     assert value == "Unable to resolve y"
   end
 
+  @tag :environment
   test "that we are able to find the value of a known name" do
     entry = [[:x, :alo?], [7, "ova"]]
     name = :alo?
@@ -75,6 +81,7 @@ defmodule SeaC.EnvironmentTest do
     assert value == "ova"
   end
 
+  @tag :environment
   test "that we gracefully handle the search in an empty entry" do
     name = :x
 
@@ -88,6 +95,7 @@ defmodule SeaC.EnvironmentTest do
     assert value == "Unable to resolve x"
   end
 
+  @tag :environment
   test "that we gracefully handle unknown names in entries" do
     entry = [[:x], [7]]
     name = :y

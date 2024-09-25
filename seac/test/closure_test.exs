@@ -3,6 +3,7 @@ defmodule SeaC.ClosureTests do
 
   alias SeaC.Evaluator
 
+  @tag :closure
   test "that we are able to apply closures" do
     closure_table = []
     closure_formals = [:x]
@@ -13,6 +14,7 @@ defmodule SeaC.ClosureTests do
     assert Evaluator.apply_closure(closure, [5], []) == 5
   end
 
+  @tag :closure
   test "that we generate proper env entries for variadic closures" do
     formals = [:x, :".y"]
     values = [1, 2, 3]
@@ -23,6 +25,7 @@ defmodule SeaC.ClosureTests do
     assert entry == proper_entry
   end
 
+  @tag :closure
   # what abou the empty spread case?
   test "that we are able to apply closures with variadic params" do
     closure_table = []
