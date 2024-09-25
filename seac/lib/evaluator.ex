@@ -280,7 +280,7 @@ defmodule SeaC.Evaluator do
     cond do
       primitive?(function) -> apply_primitive(hd(tl(function)), values)
       non_primitive?(function) -> apply_closure(hd(tl(function)), values, env)
-      true -> :unknown_function
+      true -> [:unknown_function, function]
     end
   end
 
