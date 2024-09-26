@@ -6,6 +6,7 @@ defmodule SeaC.Runner do
   def run(file) do
     {:ok, symbols} = File.read(file)
 
+<<<<<<< HEAD
     Tokenizer.tokenize(symbols).elements
     # this should not be here
     |> hd()
@@ -14,6 +15,9 @@ defmodule SeaC.Runner do
   def run(symbols) do
     Tokenizer.process(symbols)
 >>>>>>> b761346 (feat: running Sea more conveniently)
+=======
+    Tokenizer.process(symbols)
+>>>>>>> ccf68e4 (feat: convenient symbol processing with tokenizer)
     |> Evaluator.value()
   end
 
