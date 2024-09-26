@@ -68,6 +68,6 @@ To evaluate a Sea program, you should start the Elixir with Sea modules loaded, 
 
 Then, use the [runner module](./seac/lib/runner.ex) and pass it the Sea file, as below:
 
-    iex(1)> SeaC.Runner.run("path/to/program.sea")
+    iex(1)> SeaC.Runner.run_file("path/to/program.sea")
 
 Note that the *path* can be relative, as well as absolute
