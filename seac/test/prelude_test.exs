@@ -55,5 +55,12 @@ defmodule SeaC.PreludeTests do
 
       assert SeaC.Runner.run_file(file) == [[1, 3], [2], [4], []]
     end
+
+    @tag :prelude
+    test "difference" do
+      file = "test/fixtures/prelude/difference.sea"
+
+      assert SeaC.Runner.run_file(file) == [[1, 2], [3], [], []]
+    end
   end
 end
