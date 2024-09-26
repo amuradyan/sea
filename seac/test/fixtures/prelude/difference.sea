@@ -1,0 +1,32 @@
+( ; Difference between two lists
+
+  ; IMPORTS
+  (define list
+    (lambda (.elements) .elements))
+
+  (define contains?
+    (lambda (list value)
+      (cond
+        ((null? list) false)
+        ((same? (car list) value) true)
+        (else (contains? (cdr list) value)))))
+
+  (define append
+    (lambda (left right)
+      (cond
+        ((null? left) right)
+        (else (cons (car left) (append (cdr left) right))))))
+  ; IMPORTS
+
+  (define difference
+    (lambda (left right)
+      (cond
+        ((null? left) (quote ()))
+        ((contains? right (car left)) (difference (cdr left) right))
+        (else (cons (car left) (difference (cdr left) right))))))
+
+  (list
+    (difference (list 1 2 3) (list 3 4))
+    (difference (list 3) (quote ()))
+    (difference (quote ()) (list 1 2 3))
+    (difference (quote ()) (quote ())))
