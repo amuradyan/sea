@@ -5,10 +5,7 @@ defmodule SeaC.Runner do
   def run(file) do
     {:ok, symbols} = File.read(file)
 
-    Tokenizer.tokenize(symbols).elements
-    # this should not be here
-    |> hd()
-    |> Tokenizer.remove_parens()
+    Tokenizer.process(symbols)
     |> Evaluator.value()
   end
 end

@@ -3,6 +3,14 @@ defmodule SeaC.TokenizerTests do
   use ExUnit.Case
 
   @tag :tokenizer
+  test "should provide a way to get the processed programm" do
+    program = "((define f (lambda (x) (+ x 1))) (f 2))"
+
+    assert SeaC.Tokenizer.process(program) ==
+             [[:define, :f, [:lambda, [:x], [:+, :x, :"1"]]], [:f, :"2"]]
+  end
+
+  @tag :tokenizer
   test "should be able to tokenize a valid Sea program" do
     {:ok, input} = File.read("test/fixtures/hello-world.sea")
 

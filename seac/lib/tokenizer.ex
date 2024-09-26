@@ -1,6 +1,12 @@
 defmodule SeaC.Tokenizer do
   alias SeaC.TokenSpace
 
+  def process(symbols) do
+    tokenize(symbols).elements
+    |> hd()
+    |> remove_parens()
+  end
+
   def tokenize(input) do
     input
     |> insulate_parenthesis
