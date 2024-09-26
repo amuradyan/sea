@@ -21,10 +21,10 @@
   (define union
     (lambda (left right)
       (cond
-      ((null? left) right)
-      ((null? right) left)
-      ((contains? left (car right)) (union left (cdr right)))
-      (else (union (append left (car right)) (cdr right))))))
+        ((null? left) right)
+        ((null? right) left)
+        ((contains? left (car right)) (union left (cdr right)))
+        (else (union (append left (list (car right))) (cdr right))))))
 
   (list
     (union (list 1) (list 1 3))
