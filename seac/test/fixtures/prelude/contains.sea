@@ -1,13 +1,10 @@
 ( ; Check if a list contains a value
-<<<<<<< HEAD
 
   ; IMPORTS
   (define list
     (lambda (.elements) .elements))
   ; IMPORTS
 
-=======
->>>>>>> da4b036 (feat: contains added to prelude)
   (define contains?
     (lambda (list value)
       (cond
@@ -15,17 +12,7 @@
         ((same? (car list) value) true)
         (else (contains? (cdr list) value)))))
 
-<<<<<<< HEAD
   (list
     (contains? (quote ()) 3)
     (contains? (list 1 (quote (a b))) (quote (a b)))
     (contains? (list 1 2) "2")))
-=======
-  (cons
-    (contains? (quote ()) 3)
-    (cons
-      (contains? (cons 1 (cons (quote (a b)) (quote ()))) (quote (a b)))
-      (cons
-        (contains? (cons 1 (cons 2 (quote ()))) "2")
-        (quote ()))))
->>>>>>> da4b036 (feat: contains added to prelude)

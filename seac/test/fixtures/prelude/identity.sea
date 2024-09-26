@@ -1,45 +1,14 @@
 (  ; Evaluates to its' argument
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-  (define identity
-    (lambda (value) value))
->>>>>>> bbe7c37 (chore: tagging the tests)
 
   ; IMPORTS
   (define list
     (lambda (.elements) .elements))
   ; IMPORTS
 
-  (define identity
-    (lambda (.value)
-      (cond
-        ((null? .value) (quote ()))
-        ((null? (cdr .value)) (car .value))
-        (else .value))))
-=======
   (define identity(lambda (value) value))
->>>>>>> 871feef (feat: identity became arity one from vararg)
 
   (list
     (identity (quote ()))
-<<<<<<< HEAD
-    (cons
-      (identity (quote ճպուռ))
-      (cons
-<<<<<<< HEAD
-        (identity
-          (cons (quote մրջյուն) (cons (quote թրթուռ) (quote ()))))
-          (quote ())))))
-=======
     (identity (quote ճպուռ))
     (identity (list (quote մատակ)))
     (identity (list (quote մրջյուն) (quote թրթուռ)))))
->>>>>>> 17e8a00 (chore: reusing list, making prelude more readable)
-=======
-        (identity (cons (quote մատակ) (quote ())))
-        (cons
-          (identity
-            (cons (quote մրջյուն) (cons (quote թրթուռ) (quote ()))))
-            (quote ()))))))
->>>>>>> 871feef (feat: identity became arity one from vararg)

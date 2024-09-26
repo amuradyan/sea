@@ -30,19 +30,4 @@ defmodule SeaC.RunnerTests do
 
     assert SeaC.Runner.run(program) == 3
   end
-<<<<<<< HEAD
-
-  test "that we can understand a definition in a function" do
-    file = "test/fixtures/definitions/define-in-a-function.sea"
-
-    assert SeaC.Runner.run(file) == 6
-  end
-
-  test "that we can handle variadic parameters" do
-    file = "test/fixtures/varargs.sea"
-
-    assert SeaC.Runner.run(file) == [3, 4, 5]
-  end
-=======
->>>>>>> bbe7c37 (chore: tagging the tests)
 end

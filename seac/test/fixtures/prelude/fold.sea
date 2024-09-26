@@ -1,5 +1,4 @@
 ( ; folds a list with a function and an accumulator
-<<<<<<< HEAD
 
   ; IMPORTS
   (define list
@@ -12,27 +11,6 @@
         ((null? as) acc)
         (else (fold (cdr as) (f acc (car as)) f)))))
 
-<<<<<<< HEAD
   (list
     (fold (list 1 2 3) 0 (lambda (number acc) (+ number acc)))
     (fold (quote ()) 0 (lambda (x acc) (- x acc)))))
-=======
-  (cons
-    (fold (cons 1 (cons 2 (cons 3 (quote ())))) 0 (lambda (number acc) (+ number acc)))
-    (cons
-      (fold (quote ()) 0 (lambda (x acc) (- x acc)))
-      (quote ()))))
->>>>>>> f9901c6 (chore: swapped the accumulator and the functon argument in `fold`)
-=======
-  (define fold
-    (lambda (as f acc)
-      (cond
-        ((null? as) acc)
-        (else (fold (cdr as) f (f acc (car as)))))))
-
-  (cons
-    (fold (cons 1 (cons 2 (cons 3 (quote ())))) (lambda (number acc) (+ number acc)) 0)
-    (cons
-      (fold (quote ()) (lambda (x acc) (- x acc)) 0)
-      (quote ()))))
->>>>>>> 3f55cc8 (feat: Sea has fold)

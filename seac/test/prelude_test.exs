@@ -30,8 +30,6 @@ defmodule SeaC.PreludeTests do
     end
 
     @tag :prelude
-<<<<<<< HEAD
-=======
     test "fold" do
       file = "test/fixtures/prelude/fold.sea"
 
@@ -39,20 +37,15 @@ defmodule SeaC.PreludeTests do
     end
 
     @tag :prelude
->>>>>>> b761346 (feat: running Sea more conveniently)
     test "contains" do
       file = "test/fixtures/prelude/contains.sea"
 
       assert SeaC.Runner.run_file(file) == [false, true, false]
     end
 
-    @tag :prelude
-    test "fold" do
-      file = "test/fixtures/prelude/fold.sea"
+    test "append" do
+      file = "test/fixtures/prelude/append.sea"
 
-<<<<<<< HEAD
-      assert SeaC.Runner.run(file) == [6, 0]
-=======
       assert SeaC.Runner.run_file(file) == [[1, 2, 3, 4], [1, 2], [1, 2], []]
     end
 
@@ -61,21 +54,6 @@ defmodule SeaC.PreludeTests do
       file = "test/fixtures/prelude/union.sea"
 
       assert SeaC.Runner.run_file(file) == [[1, 3], [2], [4], []]
->>>>>>> b761346 (feat: running Sea more conveniently)
-    end
-
-    @tag :prelude
-    test "append" do
-      file = "test/fixtures/prelude/append.sea"
-
-      assert SeaC.Runner.run(file) == [[1, 2, 3, 4], [1, 2], [1, 2], []]
-    end
-
-    @tag :prelude
-    test "union" do
-      file = "test/fixtures/prelude/union.sea"
-
-      assert SeaC.Runner.run(file) == [[1, 3], [2], [4], []]
     end
   end
 end
