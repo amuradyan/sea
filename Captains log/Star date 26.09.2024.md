@@ -32,3 +32,7 @@ After removing them, running the single test for `sandbox.sea` went down to 0.07
     :unicode.characters_to_binary/2                           566  1.13  127    0.22
 
 The `inspect` and `logger` are gone. I needed it for pretty printing tbh, probably can find a better way to do that.
+
+-----
+
+I am thinking of merging or at least cherry-picking the `n-queens` into `master`, since a lot of development is happening on it, most of it not about the N queen puzzle.
