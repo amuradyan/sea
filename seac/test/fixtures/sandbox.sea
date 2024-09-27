@@ -1,4 +1,54 @@
 ( ; Sandbox
+
+  ; IMPORTS
+  (define list
+    (lambda (.elements) .elements))
+
+  (define identity
+    (lambda (value) value))
+
+  (define map
+    (lambda (as f)
+      (cond
+        ((null? as) (quote ()))
+        (else
+          (cons (f (car as)) (map (cdr as) f))))))
+
+  (define fold
+    (lambda (as acc f)
+      (cond
+        ((null? as) acc)
+        (else (fold (cdr as) (f acc (car as)) f)))))
+
+  (define append
+    (lambda (left right)
+      (cond
+        ((null? left) right)
+        (else (cons (car left) (append (cdr left) right))))))
+
+  (define contains?
+    (lambda (list value)
+      (cond
+        ((null? list) false)
+        ((same? (car list) value) true)
+        (else (contains? (cdr list) value)))))
+
+  (define union
+    (lambda (left right)
+      (cond
+        ((null? left) right)
+        ((null? right) left)
+        ((contains? left (car right)) (union left (cdr right)))
+        (else (union (append left (list (car right))) (cdr right))))))
+
+  (define difference
+    (lambda (left right)
+      (cond
+        ((null? left) (quote ()))
+        ((contains? right (car left)) (difference (cdr left) right))
+        (else (cons (car left) (difference (cdr left) right))))))
+  ; IMPORTS
+
   (define max-file 4)
   (define max-rank 4)
 
@@ -9,19 +59,33 @@
     (lambda (number) (- number 1)))
 
   (define rank-of car)
-
   (define file-of
     (lambda (position) (car (cdr position))))
-
-  (define list
-    (lambda (.elements) .elements))
 
   (define Square list)
 
   (define queen-at list)
 
-  (define identity
-    (lambda (value) value))
+  (define generate-board
+    (lambda (x y)
+      (
+        (define generate-board-helper
+          (lambda (current-x current-y)
+            (cond
+              ((and (same? current-x x) (same? current-y y))
+                (cons
+                  (Square current-x current-y)
+                  (quote ())))
+              ((and (lt? current-x x) (same? current-y y))
+                (cons
+                  (Square current-x current-y)
+                  (generate-board-helper (+ 1 current-x) 1)))
+              (else
+                (cons
+                  (Square current-x current-y)
+                  (generate-board-helper current-x (+ 1 current-y)))))))
+
+        (generate-board-helper 1 1))))
 
   (define calculate-covered-files
     (lambda (queen)
@@ -67,11 +131,11 @@
 
         (cond
           ((lt? rank-distance file-distance)
-            (position
+            (Square
               (+ (file-of cell) rank-distance)
               (- (rank-of cell) rank-distance)))
           ((gt? rank-distance file-distance)
-            (position
+            (Square
               (+ (file-of cell) file-distance)
               (- (rank-of cell) file-distance)))
           (else
@@ -126,13 +190,53 @@
 
         (loop (rank-of origin) (file-of origin)))))
 
-  (define merge-guarded-positions
-    (lambda (position)
-      (list
-        (calculate-covered-main-diagonal (queen-at 2 3))
-        (calculate-covered-anti-diagonal (queen-at 2 3))
-        (calculate-covered-files (queen-at 2 3))
-        (calculate-covered-ranks (queen-at 2 3)))))
+  (define calcs
+    (list
+      calculate-covered-main-diagonal
+      calculate-covered-anti-diagonal
+      calculate-covered-files
+      calculate-covered-ranks))
 
-  (merge-guarded-positions (queen-at 2 3))
-  )
+  (define calculate-covered-squares
+    (lambda (queen calculators)
+      (fold
+        (cdr calculators)
+        ((car calculators) queen)
+        (lambda (acc calculator) (union acc (calculator queen))))))
+
+  (define solve
+    (lambda (board queens-to-place queens-placed)
+        (cond
+          ((zero? queens-to-place) queens-placed)
+          ((null? board) (quote none))
+          (else
+            (
+              (define placed-queen
+                (car board))
+
+              (define covered-squares
+                (calculate-covered-squares placed-queen calcs))
+
+              (define available-squares
+                (difference board covered-squares))
+
+              (define solution
+                (solve
+                  available-squares
+                  (decrement queens-to-place)
+                  (append queens-placed (list placed-queen))))
+
+              (cond
+                ((same? solution (quote none))
+                  (solve (cdr board) queens-to-place queens-placed))
+                (else solution)))))))
+
+  (list
+    (solve (generate-board 2 2) 0 (quote ()))
+    (solve (quote ()) 0 (quote ()))
+    (solve (quote ()) 7 (quote ()))
+    (solve (generate-board 2 2) 1 (quote ()))
+    (solve (generate-board 2 2) 2 (quote ()))
+    (solve (generate-board 3 3) 2 (quote ()))
+    (solve (generate-board 4 4) 4 (quote ()))
+)
