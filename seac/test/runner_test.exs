@@ -30,4 +30,11 @@ defmodule SeaC.RunnerTests do
 
     assert SeaC.Runner.run(program) == 3
   end
+
+  @tag :runner
+  test "that we can solve the N-queens problem" do
+    file = "test/fixtures/n-queens.sea"
+
+    assert SeaC.Runner.run_file(file) == [[1, 2], [2, 4], [3, 1], [4, 3]]
+  end
 end
