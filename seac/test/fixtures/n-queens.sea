@@ -65,9 +65,6 @@
         (else (cons (car left) (difference (cdr left) right))))))
   ; IMPORTS
 
-  (define max-file 4)
-  (define max-rank 4)
-
   (define increment
     (lambda (number) (+ number 1)))
 
@@ -77,8 +74,11 @@
   (define rank-of car)
   (define file-of
     (lambda (position) (car (cdr position))))
+  (define free-squares-of
+    (lambda (board) (car (cdr (cdr board)))))
 
   (define Square list)
+  (define Board list)
 
   (define queen-at list)
 
@@ -101,17 +101,19 @@
                   (Square current-x current-y)
                   (generate-board-helper current-x (+ 1 current-y)))))))
 
-        (generate-board-helper 1 1))))
+        (cond
+          ((or (zero? x) (zero? y)) (Board x y (quote ())))
+          (else (Board x y (generate-board-helper 1 1)))))))
 
   (define calculate-covered-files
-    (lambda (queen)
+    (lambda (queen board)
       (
         (define file (file-of queen))
 
         (define loop
           (lambda (rank)
             (cond
-              ((same? rank max-rank)
+              ((same? rank (rank-of board))
                 (list (Square rank file)))
               (else
                 (cons
@@ -121,14 +123,14 @@
         (loop 1))))
 
   (define calculate-covered-ranks
-    (lambda (queen)
+    (lambda (queen board)
       (
         (define rank (rank-of queen))
 
         (define loop
           (lambda (file)
             (cond
-              ((same? file max-file)
+              ((same? file (file-of board))
                 (list (Square rank file)))
               (else
                 (cons
@@ -138,7 +140,7 @@
         (loop 1))))
 
   (define find-anti-diagonal-origin
-    (lambda (cell)
+    (lambda (cell max-file)
       (
         (define rank-distance
           (- (file-of cell) 1))
@@ -158,15 +160,15 @@
             (Square max-file 1))))))
 
   (define calculate-covered-anti-diagonal
-    (lambda (queen)
+    (lambda (queen board)
       (
         (define origin
-          (find-anti-diagonal-origin queen))
+          (find-anti-diagonal-origin queen (file-of board)))
 
         (define loop
           (lambda (rank file)
             (cond
-              ((or (same? rank 1) (same? file max-file))
+              ((or (same? rank 1) (same? file (file-of board)))
                 (list (Square rank file)))
               (else
                 (cons
@@ -189,7 +191,7 @@
           (else (Square 1 1))))))
 
   (define calculate-covered-main-diagonal
-    (lambda (queen)
+    (lambda (queen board)
       (
         (define origin
           (find-main-diagonal-origin queen))
@@ -197,7 +199,7 @@
         (define loop
           (lambda (rank file)
             (cond
-              ((or (same? max-rank rank) (same? max-file file))
+              ((or (same? (rank-of board) rank) (same? (file-of board) file))
                 (list (Square rank file)))
               (else
                 (cons
@@ -214,39 +216,40 @@
       calculate-covered-ranks))
 
   (define calculate-covered-squares
-    (lambda (queen calculators)
+    (lambda (queen board calculators)
       (fold
         (cdr calculators)
-        ((car calculators) queen)
-        (lambda (acc calculator) (union acc (calculator queen))))))
+        ((car calculators) queen board)
+        (lambda (acc calculator) (union acc (calculator queen board))))))
 
   (define solve
     (lambda (board queens-to-place queens-placed)
         (cond
           ((zero? queens-to-place) queens-placed)
-          ((null? board) (quote none))
+          ((null? (free-squares-of board)) (quote none))
           (else
             (
               (define placed-queen
-                (car board))
+                (car (free-squares-of board)))
 
               (define covered-squares
-                (calculate-covered-squares placed-queen calcs))
+                (calculate-covered-squares placed-queen board calcs))
 
               (define available-squares
-                (difference board covered-squares))
+                (difference (free-squares-of board) covered-squares))
 
               (define solution
                 (solve
-                  available-squares
+                  (Board (rank-of board) (file-of board) available-squares)
                   (decrement queens-to-place)
                   (append queens-placed (list placed-queen))))
 
               (cond
                 ((same? solution (quote none))
-                  (solve (cdr board) queens-to-place queens-placed))
+                  (solve
+                    (Board (rank-of board) (file-of board) (cdr (free-squares-of board)))
+                    queens-to-place
+                    queens-placed))
                 (else solution)))))))
 
-  (list
-    (solve (generate-board 4 4) 4 (quote ()))
-)
+  (solve (generate-board 4 4) 4 (quote ())))
