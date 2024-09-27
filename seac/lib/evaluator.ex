@@ -5,10 +5,10 @@ defmodule SeaC.Evaluator do
   alias SeaC.ReservedWords
 
   def meaning(expression, env) do
-    Logger.debug("""
-      \nExpression: #{Kernel.inspect(expression)}
-      \nEnvironment: #{Kernel.inspect(env)}
-    """)
+    # Logger.debug("""
+    #   \nExpression: #{Kernel.inspect(expression)}
+    #   \nEnvironment: #{Kernel.inspect(env)}
+    # """)
 
     mnng =
       case expression do
@@ -24,10 +24,10 @@ defmodule SeaC.Evaluator do
           expression_to_action(expression).(expression, env)
       end
 
-    Logger.debug("""
-      \nMeaning of #{Kernel.inspect(expression)}
-    is ... #{Kernel.inspect(mnng)}
-    """)
+    # Logger.debug("""
+    #   \nMeaning of #{Kernel.inspect(expression)}
+    # is ... #{Kernel.inspect(mnng)}
+    # """)
 
     mnng
   end
@@ -263,10 +263,10 @@ defmodule SeaC.Evaluator do
           Environment.extend_environment(table, entry) ++
             outer_env
 
-        Logger.debug("""
-          \nApplying closure #{Kernel.inspect(body)}
-          \nIn environment #{Kernel.inspect(env)}
-        """)
+        # Logger.debug("""
+        #   \nApplying closure #{Kernel.inspect(body)}
+        #   \nIn environment #{Kernel.inspect(env)}
+        # """)
 
         meaning(body, env)
 
