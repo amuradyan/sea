@@ -4,6 +4,20 @@ defmodule SeaC.EnvironmentTest do
   alias SeaC.Environment
 
   @tag :environment
+  test "that the default environment is created under the name of :global" do
+    env = Environment.new()
+
+    assert env == %Environment{name: :global, frames: []}
+  end
+
+  @tag :environment
+  test "that we are able to create an environment with a custom name" do
+    env = Environment.new(:local)
+
+    assert env == %Environment{name: :local, frames: []}
+  end
+
+  @tag :environment
   test "that we are able to extend the environment" do
     env = [[[:r], [9]]]
     entry = [[:l], [10]]

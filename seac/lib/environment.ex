@@ -1,4 +1,19 @@
 defmodule SeaC.Environment do
+  alias SeaC.Environment
+
+  @type env :: %Environment{name: atom(), frames: [nonempty_maybe_improper_list()]}
+  defstruct [name: :global , frames: []]
+
+  @spec new() :: Environment.env()
+  def new do
+    %Environment{name: :global, frames: []}
+  end
+
+  @spec new(atom()) :: Environment.env()
+  def new(name) do
+    %Environment{name: name, frames: []}
+  end
+
   def environment_lookup(env, name, fallback) do
     case env do
       [] ->

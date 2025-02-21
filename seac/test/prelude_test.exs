@@ -1,7 +1,6 @@
 defmodule SeaC.PreludeTests do
   use ExUnit.Case
 
-  @tag :prelude
   describe "Prelude" do
     @tag :prelude
     test "map" do
