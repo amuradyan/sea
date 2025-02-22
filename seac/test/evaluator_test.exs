@@ -3,6 +3,7 @@ defmodule SeaC.EvaluatorTests do
 
   alias SeaC.Evaluator
   alias SeaC.ReservedWords
+  alias SeaC.Environment
 
   describe "Evaluator" do
     @tag :evaluator
@@ -19,7 +20,7 @@ defmodule SeaC.EvaluatorTests do
 
     @tag :evaluator
     test "that we understand the meaning of definitions" do
-      env = []
+      env = %Environment{}
       x_plus_1 = [[:define, :x, :"1"], [:+, :x, :"1"]]
 
       assert Evaluator.meaning(x_plus_1, env) == 2
@@ -27,20 +28,26 @@ defmodule SeaC.EvaluatorTests do
 
     @tag :evaluator
     test "that we regard the numbers as constants" do
-      assert Evaluator.meaning(:"7", []) == 7
-      assert Evaluator.meaning(:"7.7", []) == 7.7
+      env = %Environment{}
+
+      assert Evaluator.meaning(:"7", env) == 7
+      assert Evaluator.meaning(:"7.7", env) == 7.7
     end
 
     @tag :evaluator
     test "that we regard the Booleans as constants" do
-      assert Evaluator.meaning(true, []) == true
-      assert Evaluator.meaning(false, []) == false
+      env = %Environment{}
+
+      assert Evaluator.meaning(true, env) == true
+      assert Evaluator.meaning(false, env) == false
     end
 
     @tag :evaluator
     test "that we regard some words as constants" do
+      env = %Environment{}
+
       actions_for_reserved_words =
-        Enum.map(ReservedWords.all(), fn word -> Evaluator.meaning(word, []) end)
+        Enum.map(ReservedWords.all(), fn word -> Evaluator.meaning(word, env) end)
 
       expected_outcome =
         Enum.map(ReservedWords.values(), fn word -> word end) ++
@@ -52,7 +59,8 @@ defmodule SeaC.EvaluatorTests do
     @tag :evaluator
     test "that we regard some expressions as identifiers" do
       identifier = :birthmarks
-      env = [[[:scars, identifier], [4, :none]]]
+      env =
+        %Environment{name: :global, frames: [[[:scars, identifier], [4, :none]]]}
 
       resolved_identifier = Evaluator.meaning(identifier, env)
       unresolved_identifier = Evaluator.meaning(:unknown, env)

@@ -4,10 +4,8 @@ defmodule SeaC.EnvironmentTest do
   alias SeaC.Environment
 
   @tag :environment
-  test "that the default environment is created under the name of :global" do
-    env = Environment.new()
-
-    assert env == %Environment{name: :global, frames: []}
+  test "that the default environment is created under the name of :global and with no frames" do
+    assert %Environment{} == %Environment{name: :global, frames: []}
   end
 
   @tag :environment
@@ -19,12 +17,12 @@ defmodule SeaC.EnvironmentTest do
 
   @tag :environment
   test "that we are able to extend the environment" do
-    env = [[[:r], [9]]]
+    env = %Environment{frames: [[[:r], [9]]]}
     entry = [[:l], [10]]
 
     extended_environment = Environment.extend_environment(env, entry)
 
-    assert extended_environment == [[[:l], [10]], [[:r], [9]]]
+    assert extended_environment == %Environment{frames: [[[:l], [10]], [[:r], [9]]]}
   end
 
   @tag :environment
@@ -38,7 +36,7 @@ defmodule SeaC.EnvironmentTest do
 
   @tag :environment
   test "that we are able to lookup the value of a known name" do
-    env = [[[:x], [7]], [[:y], [9]]]
+    env = %Environment{frames: [[[:x], [7]], [[:y], [9]]]}
     name = :y
 
     value =
@@ -57,7 +55,7 @@ defmodule SeaC.EnvironmentTest do
 
     value =
       Environment.environment_lookup(
-        [],
+        %Environment{},
         name,
         fn -> "Unable to resolve " <> Atom.to_string(name) end
       )
@@ -67,7 +65,7 @@ defmodule SeaC.EnvironmentTest do
 
   @tag :environment
   test "that we gracefully handle unknown names in environments" do
-    env = [[[:x], [7]]]
+    env = %Environment{frames: [[[:x], [7]]]}
     name = :y
 
     value =

@@ -4,18 +4,14 @@ defmodule SeaC.Environment do
   @type env :: %Environment{name: atom(), frames: [nonempty_maybe_improper_list()]}
   defstruct [name: :global , frames: []]
 
-  @spec new() :: Environment.env()
-  def new do
-    %Environment{name: :global, frames: []}
-  end
-
   @spec new(atom()) :: Environment.env()
   def new(name) do
     %Environment{name: name, frames: []}
   end
 
+  @spec environment_lookup(Environment.env(), any(), any()) :: any()
   def environment_lookup(env, name, fallback) do
-    case env do
+    case env.frames do
       [] ->
         fallback.()
 
@@ -23,11 +19,12 @@ defmodule SeaC.Environment do
         entry_lookup(
           entry,
           name,
-          fn -> environment_lookup(rest, name, fallback) end
+          fn -> environment_lookup(%{env | frames: rest}, name, fallback) end
         )
     end
   end
 
+  @spec entry_lookup(list(), any(), fun()) :: any()
   def entry_lookup(entry, name, fallback) do
     case entry do
       [] ->
@@ -47,8 +44,10 @@ defmodule SeaC.Environment do
     end
   end
 
-  def extend_environment(env, entry), do: [entry | env]
+  @spec extend_environment(Environment.env(), [list()]) :: Environment.env()
+  def extend_environment(env, entry), do: %{env | frames: [entry | env.frames]}
 
+  @spec extend_entry(list(), atom(), any()) :: list()
   def extend_entry(entry, formal, value) do
     formals_of = fn entry -> hd(entry) end
     values_of = fn entry -> hd(tl(entry)) end
