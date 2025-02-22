@@ -8,14 +8,16 @@ defmodule SeaC.EvaluatorTests do
   describe "Evaluator" do
     @tag :evaluator
     test "that we can extend the environment by defining names for values" do
-      env = [[[:four], [4]]]
+      env = %Environment{frames: [[[:four], [4]]]}
       x_as_1 = [:define, :x, :"1"]
       lambda = [:lambda, [:a, :b], [:+, :a, :b]]
       y_as_lambda = [:define, :y, lambda]
       value = [:"non-primitive", [env | tl(lambda)]]
 
-      assert Evaluator.define(x_as_1, env) == [[[:x], [1]], [[:four], [4]]]
-      assert Evaluator.define(y_as_lambda, env) == [[[:y], [value]], [[:four], [4]]]
+      assert Enum.all?([
+        Evaluator.define(x_as_1, env) == %Environment{frames: [[[:x], [1]], [[:four], [4]]]},
+        Evaluator.define(y_as_lambda, env) == %Environment{frames: [[[:y], [value]], [[:four], [4]]]}
+      ])
     end
 
     @tag :evaluator
@@ -130,7 +132,7 @@ defmodule SeaC.EvaluatorTests do
 
     @tag :evaluator
     test "that we are able to find the meaning of a primitive" do
-      env = [
+      env = %Environment{frames: [
         [[:list], [[1, [2]]]],
         [[:empty_list], [[]]],
         [[:t, :f], [true, false]],
@@ -142,7 +144,7 @@ defmodule SeaC.EvaluatorTests do
         [[:hing], [5]],
         [[:վեցուվեց], [6.6]],
         [[:ծիծիլյառդ], [10_000_000_000_000_000_000_000_000_000_000_000_000]]
-      ]
+      ]}
 
       assert Evaluator.meaning([:cons, :"1", [:cons, :"2", [:quote, []]]], env) == [1, 2]
       assert Evaluator.meaning([:cons, :mek, :b], env) == [1, 2]
@@ -192,13 +194,13 @@ defmodule SeaC.EvaluatorTests do
 
     @tag :evaluator
     test "that we can tell a primitive call from a non-primitive one and nest them" do
-      closure_table = []
+      closure_table = %Environment{}
       closure_formals = [:x, :y]
       closure_body = [:cons, :"1", [:+, :x, :y]]
 
       closure = [closure_table, closure_formals, closure_body]
 
-      assert Evaluator.apply_function([:"non-primitive", closure], [5, 8], []) == [1, 13]
+      assert Evaluator.apply_function([:"non-primitive", closure], [5, 8], %Environment{}) == [1, 13]
     end
 
     @tag :evaluator
@@ -209,7 +211,7 @@ defmodule SeaC.EvaluatorTests do
       # check for invalid applications
       application = [[:lambda, closure_formals, closure_body], :"5", :"6"]
 
-      assert Evaluator.application(application, []) == [11, 1]
+      assert Evaluator.application(application, %Environment{}) == [11, 1]
     end
 
     @tag :evaluator
@@ -240,7 +242,7 @@ defmodule SeaC.EvaluatorTests do
 
     @tag :evaluator
     test "that we can evaluate a list" do
-      env = [[[:x], [2]]]
+      env = %Environment{frames: [[[:x], [2]]]}
 
       assert Evaluator.evaluate_list([[:quote, :mek], :x, :"3"], env) == [:mek, 2, 3]
       assert Evaluator.evaluate_list([], env) == []
@@ -266,7 +268,7 @@ defmodule SeaC.EvaluatorTests do
 
     @tag :evaluator
     test "that we can fall back to `else` clause, while evaluating the condition" do
-      env = [[[:always, :one], [false, 1]]]
+      env = %Environment{frames: [[[:always, :one], [false, 1]]]}
 
       false_clause = [:always, :unknown]
       else_clause = [:else, :one]
@@ -276,7 +278,7 @@ defmodule SeaC.EvaluatorTests do
 
     @tag :evaluator
     test "that we are able to evaluate condition clauses" do
-      env = [[[:always, :sometimes, :two], [false, true, 2]]]
+      env = %Environment{frames: [[[:always, :sometimes, :two], [false, true, 2]]]}
 
       false_clause = [:always, 1]
       true_clause = [:sometimes, :two]

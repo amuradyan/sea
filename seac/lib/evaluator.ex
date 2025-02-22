@@ -259,9 +259,10 @@ defmodule SeaC.Evaluator do
         entry =
           create_closure_env_entry(formals, values)
 
-        env =
-          Environment.extend_environment(table, entry) ++
-            outer_env
+        # FIXME: this is ugly
+        xenv = Environment.extend_environment(table, entry)
+        oframes = outer_env.frames
+        env = %Environment{frames: xenv.frames ++ oframes}
 
         # Logger.debug("""
         #   \nApplying closure #{Kernel.inspect(body)}
@@ -293,7 +294,7 @@ defmodule SeaC.Evaluator do
   end
 
   def value(expression) do
-    meaning(expression, [])
+    meaning(expression, %Environment{})
   end
 
   def evaluate_clauses(clauses, env) do
